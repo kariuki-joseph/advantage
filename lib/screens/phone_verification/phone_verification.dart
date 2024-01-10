@@ -1,8 +1,10 @@
 import 'package:advantage/components/primary_button.dart';
 import 'package:advantage/constants/app_color.dart';
+import 'package:advantage/routes/app_page.dart';
 import 'package:advantage/screens/phone_verification/components/single_button.dart';
 import 'package:advantage/screens/phone_verification/components/single_pin_field.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class PhoneVerification extends StatefulWidget {
   const PhoneVerification({super.key});
@@ -100,7 +102,9 @@ class _PhoneVerificationState extends State<PhoneVerification> {
 
             const SizedBox(height: 20),
             PrimaryButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.toNamed(AppPage.verificationSuccess);
+              },
               child: const Text(
                 "Verify",
                 style: TextStyle(fontSize: 16),
