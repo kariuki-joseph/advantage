@@ -69,7 +69,8 @@ class _PhoneVerificationState extends State<PhoneVerification> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List<Widget>.generate(
                 3,
-                (index) => SingleButton(onPressed: () {}, number: "$index"),
+                (index) =>
+                    SingleButton(onPressed: () {}, number: "${index + 1}"),
               ).toList(),
             ),
             const SizedBox(height: 10),
@@ -78,7 +79,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
               children: List<Widget>.generate(
                 3,
                 (index) =>
-                    SingleButton(onPressed: () {}, number: "${index + 3}"),
+                    SingleButton(onPressed: () {}, number: "${index + 4}"),
               ).toList(),
             ),
             const SizedBox(height: 10),
@@ -87,7 +88,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
               children: List<Widget>.generate(
                 3,
                 (index) =>
-                    SingleButton(onPressed: () {}, number: "${index + 6}"),
+                    SingleButton(onPressed: () {}, number: "${index + 7}"),
               ).toList(),
             ),
             const SizedBox(height: 10),

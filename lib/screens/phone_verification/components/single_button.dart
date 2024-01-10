@@ -25,7 +25,9 @@ class _SingleButtonState extends State<SingleButton> {
       child: widget.number == "del"
           ? IconButton(
               onPressed: widget.onPressed,
-              icon: const Icon(Icons.backspace_outlined))
+              icon: const Icon(Icons.backspace_outlined),
+              padding: const EdgeInsets.all(10),
+            )
           : Text(
               widget.number,
               style: const TextStyle(fontSize: 24),
