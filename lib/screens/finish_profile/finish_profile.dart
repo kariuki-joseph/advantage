@@ -15,16 +15,19 @@ class _FinishProfileState extends State<FinishProfile> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+        appBar: AppBar(
+          title: const Text(
+            "Finish setting up your profile",
+            style: TextStyle(
+              fontSize: 22.0,
+            ),
+          ),
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const Text(
-                "Finish setting up your profile",
-                style: TextStyle(
-                  fontSize: 22.0,
-                ),
-              ),
               const SizedBox(height: 60),
               TextFormField(
                 enabled: false,
@@ -52,14 +55,16 @@ class _FinishProfileState extends State<FinishProfile> {
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     border: OutlineInputBorder()),
               ),
-              const Spacer(),
+              const SizedBox(
+                height: 50,
+              ),
               PrimaryButton(
                 onPressed: () {
                   Get.toNamed(AppPage.setupPin);
                 },
                 child: const Text("Finish"),
               ),
-              const Spacer(),
+              const SizedBox(height: 10),
             ],
           ),
         ),

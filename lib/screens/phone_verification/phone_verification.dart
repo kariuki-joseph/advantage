@@ -20,98 +20,97 @@ class _PhoneVerificationState extends State<PhoneVerification> {
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Image(
-              image: AssetImage("images/ill_verification_code.png"),
-              fit: BoxFit.contain,
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              "Enter the verification code",
-              style: TextStyle(fontSize: 28),
-            ),
-            const Text(
-              "We have sent the code verification to your Phone number +254******443",
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 5),
-            // PIN fields
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SinglePinField(color: AppColor.primaryColor),
-                SinglePinField(color: AppColor.primaryLight),
-                SinglePinField(color: AppColor.primaryLight),
-                SinglePinField(color: AppColor.primaryLight),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Haven't received OTP?"),
-                TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    "Resend OTP",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List<Widget>.generate(
-                3,
-                (index) =>
-                    SingleButton(onPressed: () {}, number: "${index + 1}"),
-              ).toList(),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List<Widget>.generate(
-                3,
-                (index) =>
-                    SingleButton(onPressed: () {}, number: "${index + 4}"),
-              ).toList(),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List<Widget>.generate(
-                3,
-                (index) =>
-                    SingleButton(onPressed: () {}, number: "${index + 7}"),
-              ).toList(),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SingleButton(onPressed: () {}, number: ""),
-                SingleButton(onPressed: () {}, number: "0"),
-                SingleButton(onPressed: () {}, number: "del"),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-            PrimaryButton(
-              onPressed: () {
-                Get.toNamed(AppPage.verificationSuccess);
-              },
-              child: const Text(
-                "Verify",
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Image(
+                image: AssetImage("images/ill_verification_code.png"),
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(height: 5),
+              const Text(
+                "Enter the verification code",
+                style: TextStyle(fontSize: 28),
+              ),
+              const Text(
+                "We have sent the code verification to your Phone number +254******443",
                 style: TextStyle(fontSize: 16),
               ),
-            ),
-          ],
+              const SizedBox(height: 5),
+              // PIN fields
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SinglePinField(color: AppColor.primaryColor),
+                  SinglePinField(color: AppColor.primaryLight),
+                  SinglePinField(color: AppColor.primaryLight),
+                  SinglePinField(color: AppColor.primaryLight),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Haven't received OTP?"),
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      "Resend OTP",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 5),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List<Widget>.generate(
+                  3,
+                  (index) =>
+                      SingleButton(onPressed: () {}, number: "${index + 1}"),
+                ).toList(),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List<Widget>.generate(
+                  3,
+                  (index) =>
+                      SingleButton(onPressed: () {}, number: "${index + 4}"),
+                ).toList(),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List<Widget>.generate(
+                  3,
+                  (index) =>
+                      SingleButton(onPressed: () {}, number: "${index + 7}"),
+                ).toList(),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SingleButton(onPressed: () {}, number: ""),
+                  SingleButton(onPressed: () {}, number: "0"),
+                  SingleButton(onPressed: () {}, number: "del"),
+                ],
+              ),
+
+              const SizedBox(height: 10),
+              PrimaryButton(
+                onPressed: () {
+                  Get.toNamed(AppPage.verificationSuccess);
+                },
+                child: const Text(
+                  "Verify",
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

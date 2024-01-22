@@ -21,6 +21,7 @@ class _RegisterState extends State<Register> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -36,18 +37,12 @@ class _RegisterState extends State<Register> {
               "Create An Account With Us",
               style: TextStyle(fontSize: 28),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-              child: Text(
-                "We will send you a verification code to the number provided",
-                style: TextStyle(fontSize: 16),
-              ),
+            const Text(
+              "We will send you a verification code to the number provided",
+              style: TextStyle(fontSize: 16),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 10),
             Container(
-              margin:
-                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-              padding: const EdgeInsets.symmetric(horizontal: 5.0),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black),
                 borderRadius: BorderRadius.circular(5),
@@ -78,20 +73,26 @@ class _RegisterState extends State<Register> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 50),
             PrimaryButton(
               onPressed: _isLoading
                   ? null
                   : () {
                       setState(() {
-                        _isLoading = true;
+                        _isLoading = false;
                       });
                       // move to the next screen
                       Get.toNamed(AppPage.verifyPhone);
                     },
               child: _isLoading
                   ? const CircularProgressIndicator()
-                  : const Text("Verify"),
+                  : const Text(
+                      "Verify",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
             ),
             const SizedBox(height: 20),
           ],
