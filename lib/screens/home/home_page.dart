@@ -41,14 +41,6 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // Notification Bell Icon
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.circle_notifications_outlined,
-                      size: 36,
-                    ),
-                  ),
                 ],
               ),
               const SizedBox(height: 10),
