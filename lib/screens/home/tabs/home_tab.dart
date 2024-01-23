@@ -1,8 +1,14 @@
 import 'package:advantage/constants/app_color.dart';
+import 'package:advantage/models/ad.dart';
+import 'package:advantage/screens/home/controller/home_page_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class HomeTab extends StatelessWidget {
-  const HomeTab({
+  final HomePageController controller = Get.put(HomePageController());
+
+  HomeTab({
     super.key,
   });
 
@@ -39,93 +45,100 @@ class HomeTab extends StatelessWidget {
         const SizedBox(height: 10),
         // Body
         Expanded(
-          child: ListView.builder(
-            itemCount: 10,
-            itemBuilder: (context, index) {
-              return Card(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  side: const BorderSide(
-                    color: Colors.black,
-                    width: 1.0,
-                  ),
-                ),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage: AssetImage("images/user_avatar.png"),
+          child: Obx(
+            () {
+              if (controller.ads.isEmpty && controller.isLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                return ListView.builder(
+                  itemCount: controller.ads.length,
+                  itemBuilder: (context, index) {
+                    Ad ad = controller.ads[index];
+
+                    return Card(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        side: const BorderSide(
+                          color: Colors.black,
+                          width: 1.0,
                         ),
-                        title: Text(
-                          "John Doe",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        subtitle: Row(
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(
-                              Icons.access_time,
-                              size: 16,
-                              color: AppColor.primaryColor,
+                            ListTile(
+                              leading: const CircleAvatar(
+                                backgroundImage:
+                                    AssetImage("images/user_avatar.png"),
+                              ),
+                              title: Text(
+                                ad.userName,
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                              subtitle: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.access_time,
+                                    size: 16,
+                                    color: AppColor.primaryColor,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    timeago.format(ad.createdAt),
+                                    style: const TextStyle(fontSize: 11),
+                                  ),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  const Icon(
+                                    Icons.directions_run,
+                                    size: 16,
+                                    color: AppColor.primaryColor,
+                                  ),
+                                  Text(
+                                    "${controller.getDistance(ad.lat, ad.lng).toStringAsFixed(2)}m",
+                                    style: const TextStyle(fontSize: 11),
+                                  )
+                                ],
+                              ),
                             ),
-                            SizedBox(width: 5),
                             Text(
-                              "Posted 1 hour",
-                              style: TextStyle(fontSize: 11),
+                              ad.title,
+                              style: const TextStyle(fontSize: 16),
                             ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Icon(
-                              Icons.directions_run,
-                              size: 16,
-                              color: AppColor.primaryColor,
-                            ),
-                            Text(
-                              "1 Km",
-                              style: TextStyle(fontSize: 11),
+                            const SizedBox(height: 10),
+                            // text and call icons
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                OutlinedButton.icon(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.chat_bubble_outline),
+                                  label: const Text("Chat"),
+                                ),
+                                const SizedBox(width: 10),
+                                OutlinedButton.icon(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.call),
+                                  label: const Text("Call"),
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: AppColor.primaryColor,
+                                    foregroundColor: Colors.white,
+                                  ),
+                                )
+                              ],
                             )
                           ],
                         ),
                       ),
-                      const Text(
-                        "Bedsitter available",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        "KES 6000",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      // text and call icons
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          OutlinedButton.icon(
-                            onPressed: () {},
-                            icon: const Icon(Icons.chat_bubble_outline),
-                            label: const Text("Chat"),
-                          ),
-                          const SizedBox(width: 10),
-                          OutlinedButton.icon(
-                            onPressed: () {},
-                            icon: const Icon(Icons.call),
-                            label: const Text("Call"),
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: AppColor.primaryColor,
-                              foregroundColor: Colors.white,
-                            ),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              );
+                    );
+                  },
+                );
+              }
             },
           ),
         )

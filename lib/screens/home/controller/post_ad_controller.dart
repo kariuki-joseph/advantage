@@ -1,5 +1,6 @@
 import 'package:advantage/models/ad.dart';
 import 'package:advantage/models/user_model.dart';
+import 'package:advantage/screens/home/controller/home_page_controller.dart';
 import 'package:advantage/utils/toast_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ class PostAdController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
-
+  final HomePageController homePageController = Get.find();
   final isLoading = false.obs;
   final isLocationLoading = false.obs;
   final isLocationSelected = false.obs;
@@ -78,6 +79,9 @@ class PostAdController extends GetxController {
         isLoading.value = false;
         showSuccessToast("Ad posted successfully");
         _resetForm();
+
+        // refresh the ads in home page
+        homePageController.fetchAds();
       } catch (e) {
         showErrorToast(e.toString());
       } finally {
