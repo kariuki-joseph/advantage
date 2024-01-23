@@ -1,0 +1,66 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class UserModel {
+  String? _username;
+  String? _email;
+  String? _phone;
+  String? _pin;
+
+  UserModel({
+    String? username,
+    String? email,
+    String? phone,
+    String? pin,
+  })  : _username = username,
+        _email = email,
+        _phone = phone,
+        _pin = pin;
+
+  // Setters
+  set username(String value) {
+    _username = value;
+  }
+
+  set email(String value) {
+    _email = value;
+  }
+
+  set phone(String value) {
+    _phone = value;
+  }
+
+  set pin(String value) {
+    _pin = value;
+  }
+
+  // Getters
+  String get username => _username ?? '';
+  String get email => _email ?? '';
+  String get phone => _phone ?? '';
+  String get pin => _pin ?? '';
+
+  // hashmap to save to firestore
+  Map<String, dynamic> toMap() {
+    return {
+      'username': _username,
+      'email': _email,
+      'phone': _phone,
+      'pin': _pin,
+    };
+  }
+
+  // factory to create user from firestore
+  factory UserModel.fromDocument(DocumentSnapshot snapshot) {
+    return UserModel(
+      username: snapshot['username'],
+      email: snapshot['email'],
+      phone: snapshot['phone'],
+      pin: snapshot['pin'],
+    );
+  }
+
+  // list of users from firestore
+  static List<UserModel> fromQuery(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc) => UserModel.fromDocument(doc)).toList();
+  }
+}
