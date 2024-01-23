@@ -27,10 +27,10 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.all(16),
           child: PageView(
             controller: _pageController,
-            children: const [
-              HomeTab(),
+            children: [
+              const HomeTab(),
               PostAdTab(),
-              MessagesTab(),
+              const MessagesTab(),
             ],
             onPageChanged: (index) {
               setState(() {

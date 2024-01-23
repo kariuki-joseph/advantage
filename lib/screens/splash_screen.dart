@@ -19,19 +19,20 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () async {
-      // check if user has already created an account, login if true
-      UserModel savedUser =
-          await authController.getUserDetailsFromSharedPrefs();
+      Get.offAllNamed(AppPage.home);
+      return;
+      // // check if user has already created an account, login if true
+      // UserModel savedUser =
+      //     await authController.getUserDetailsFromSharedPrefs();
 
-      if (savedUser.id == "") {
-        // go to register page
-        Get.offAllNamed(AppPage.register);
-        return;
-      }
+      // if (savedUser.id == "") {
+      //   // go to register page
+      //   Get.offAllNamed(AppPage.register);
+      //   return;
+      // }
 
-      // already registered, go to pin login page
-      authController.saveUserDetailsToSharedPrefs();
-      Get.offAllNamed(AppPage.pinLogin);
+      // // already registered, go to pin login page
+      // Get.offAllNamed(AppPage.pinLogin);
     });
   }
 

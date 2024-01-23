@@ -1,7 +1,6 @@
 import 'package:advantage/constants/app_color.dart';
 import 'package:advantage/firebase_options.dart';
 import 'package:advantage/routes/app_page.dart';
-import 'package:advantage/screens/home/home_page.dart';
 import 'package:advantage/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +26,10 @@ class MyApp extends StatelessWidget {
       title: 'AdVantage',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: AppColor.primaryColor),
+        primaryColor: const Color.fromRGBO(0, 84, 214, 1),
+        progressIndicatorTheme: const ProgressIndicatorThemeData(
+          color: AppColor.primaryColor,
+        ),
         useMaterial3: true,
       ),
       home: const SplashScreen(),
