@@ -19,6 +19,15 @@ class PostAdTab extends StatelessWidget {
               const SizedBox(height: 10),
               TextFormField(
                 decoration: const InputDecoration(
+                  labelText: "Ad Title",
+                  hintText: "Enter Ad Title",
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.multiline,
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                decoration: const InputDecoration(
                   labelText: "Ad Description",
                   hintText: "Enter Ad Description",
                   border: OutlineInputBorder(),

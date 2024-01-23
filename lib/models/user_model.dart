@@ -5,18 +5,25 @@ class UserModel {
   String? _email;
   String? _phone;
   String? _pin;
+  String? _id;
 
   UserModel({
+    String? id,
     String? username,
     String? email,
     String? phone,
     String? pin,
-  })  : _username = username,
+  })  : _id = id,
+        _username = username,
         _email = email,
         _phone = phone,
         _pin = pin;
 
   // Setters
+  set id(String value) {
+    id = value;
+  }
+
   set username(String value) {
     _username = value;
   }
@@ -34,6 +41,7 @@ class UserModel {
   }
 
   // Getters
+  String get id => _id ?? '';
   String get username => _username ?? '';
   String get email => _email ?? '';
   String get phone => _phone ?? '';
@@ -42,6 +50,7 @@ class UserModel {
   // hashmap to save to firestore
   Map<String, dynamic> toMap() {
     return {
+      'id': _id,
       'username': _username,
       'email': _email,
       'phone': _phone,

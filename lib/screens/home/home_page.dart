@@ -27,16 +27,16 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.all(16),
           child: PageView(
             controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
             children: const [
               HomeTab(),
               PostAdTab(),
               MessagesTab(),
             ],
+            onPageChanged: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
           ),
         ),
         bottomNavigationBar: BottomNavigationBar(
