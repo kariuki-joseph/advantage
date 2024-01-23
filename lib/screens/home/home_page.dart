@@ -1,14 +1,12 @@
 import 'package:advantage/constants/app_color.dart';
+import 'package:advantage/screens/home/controller/home_page_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomePage extends StatelessWidget {
+  HomePage({super.key});
+  final HomePageController controller = Get.put(HomePageController());
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
