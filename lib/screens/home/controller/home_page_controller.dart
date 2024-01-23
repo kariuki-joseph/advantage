@@ -1,19 +1,27 @@
 import 'dart:async';
 
+import 'package:advantage/models/ad.dart';
+import 'package:advantage/utils/toast_utils.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class HomePageController extends GetxController {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final myLat = 0.0.obs;
   final myLng = 0.0.obs;
+  final isLoading = false.obs;
 
   StreamSubscription<Position>? _positionStreamSubscription;
+
   final LocationSettings locationSettings = const LocationSettings(
     accuracy: LocationAccuracy.high,
     distanceFilter: 2,
   );
+
+  final RxList<Ad> ads = RxList<Ad>();
 
   @override
   void onInit() {
@@ -35,6 +43,8 @@ class HomePageController extends GetxController {
 
     /// initial configurations and checking for permissions
     initConfig();
+    // get ads from firebase
+    fetchAds();
   }
 
   Future<Position> _determinePosition() async {
@@ -89,4 +99,28 @@ class HomePageController extends GetxController {
   }
 
   void _updateGeofence(Position position) {}
+
+  // fetch ads from firebase
+  Future<void> fetchAds() async {
+    isLoading.value = true;
+    try {
+      QuerySnapshot snapshot = await _firestore.collection("ads").get();
+      if (snapshot.docs.isNotEmpty) {
+        ads.value = Ad.fromQuerySnapshot(snapshot);
+      }
+    } catch (e) {
+      showErrorToast(e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // geting the distance between two points
+  double getDistance(double lat1, double lng1) {
+    double lat2 = myLat.value;
+    double lng2 = myLng.value;
+    double distanceInMeters =
+        Geolocator.distanceBetween(lat1, lng1, lat2, lng2);
+    return distanceInMeters;
+  }
 }

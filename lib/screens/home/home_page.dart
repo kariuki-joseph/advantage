@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
           child: PageView(
             controller: _pageController,
             children: [
-              const HomeTab(),
+              HomeTab(),
               PostAdTab(),
               const MessagesTab(),
             ],
