@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Ad {
@@ -46,12 +44,12 @@ class Ad {
       lng: snapshot['lng'],
       userId: snapshot['userId'],
       userName: snapshot['userName'],
-      createdAt: snapshot['postDate'],
+      createdAt: (snapshot['postDate'] as Timestamp).toDate(),
     );
   }
 
   // get a list of Ad objects from a QuerySnapshot
-  static List<Ad> fromQuery(QuerySnapshot snapshot) {
+  static List<Ad> fromQuerySnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) => Ad.fromDocument(doc)).toList();
   }
 }
