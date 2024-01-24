@@ -4,10 +4,10 @@ class MyBtnLoader extends StatelessWidget {
   final Color? color;
   final bool? large;
   const MyBtnLoader({
-    Key? key,
+    super.key,
     this.color,
     this.large = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
