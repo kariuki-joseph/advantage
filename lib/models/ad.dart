@@ -8,7 +8,8 @@ class Ad {
   String userId;
   String userName;
   DateTime createdAt;
-
+  double distance = 0.0;
+  bool isVisible = true;
   Ad({
     required this.id,
     required this.title,
