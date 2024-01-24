@@ -3,41 +3,39 @@ import 'dart:async';
 import 'package:advantage/models/ad.dart';
 import 'package:advantage/utils/toast_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class HomePageController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final myLat = 0.0.obs;
-  final myLng = 0.0.obs;
+  // initial location around DeKUT
+  final myLat = (-0.3981185).obs;
+  final myLng = 36.9612208.obs;
+
   final isLoading = false.obs;
 
   StreamSubscription<Position>? _positionStreamSubscription;
 
   final LocationSettings locationSettings = const LocationSettings(
     accuracy: LocationAccuracy.high,
-    distanceFilter: 2,
+    distanceFilter: 2, // notify me when I move 2 meters
   );
+
+  final int geofenceRadius = 5; // 5 meters
 
   final RxList<Ad> ads = RxList<Ad>();
 
   @override
   void onInit() {
-    super.onInit();
-    ever(myLat, (double lat) {
-      debugPrint('lat: $lat');
-    });
-    ever(myLng, (double lng) {
-      debugPrint('lng: $lng');
-    });
-
     _positionStreamSubscription =
         Geolocator.getPositionStream(locationSettings: locationSettings).listen(
       (Position position) {
         myLat.value = position.latitude;
         myLng.value = position.longitude;
+
+        recalculateDistances();
       },
     );
 
@@ -45,6 +43,8 @@ class HomePageController extends GetxController {
     initConfig();
     // get ads from firebase
     fetchAds();
+
+    super.onInit();
   }
 
   Future<Position> _determinePosition() async {
@@ -98,8 +98,6 @@ class HomePageController extends GetxController {
     super.onClose();
   }
 
-  void _updateGeofence(Position position) {}
-
   // fetch ads from firebase
   Future<void> fetchAds() async {
     isLoading.value = true;
@@ -107,6 +105,7 @@ class HomePageController extends GetxController {
       QuerySnapshot snapshot = await _firestore.collection("ads").get();
       if (snapshot.docs.isNotEmpty) {
         ads.value = Ad.fromQuerySnapshot(snapshot);
+        recalculateDistances();
       }
     } catch (e) {
       showErrorToast(e.toString());
@@ -122,5 +121,20 @@ class HomePageController extends GetxController {
     double distanceInMeters =
         Geolocator.distanceBetween(lat1, lng1, lat2, lng2);
     return distanceInMeters;
+  }
+
+  // recalculate distances once the location changes
+  void recalculateDistances() {
+    Fluttertoast.showToast(msg: "Recalculating distance....");
+
+    // update visibility of ads based on the geofence radius
+    for (var ad in ads) {
+      double distance = getDistance(ad.lat, ad.lng);
+      ad.distance = distance;
+      ad.isVisible = distance <= geofenceRadius;
+    }
+
+    // sort in ascending order of distance
+    ads.sort((a, b) => a.distance.compareTo(b.distance));
   }
 }

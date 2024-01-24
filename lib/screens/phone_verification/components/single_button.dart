@@ -1,4 +1,3 @@
-import 'package:advantage/constants/app_color.dart';
 import 'package:flutter/material.dart';
 
 class SingleButton extends StatefulWidget {

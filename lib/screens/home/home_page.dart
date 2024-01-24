@@ -1,4 +1,3 @@
-import 'package:advantage/constants/app_color.dart';
 import 'package:advantage/screens/home/controller/home_page_controller.dart';
 import 'package:advantage/screens/home/tabs/home_tab.dart';
 import 'package:advantage/screens/home/tabs/message_tab.dart';

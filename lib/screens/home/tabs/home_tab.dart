@@ -55,87 +55,92 @@ class HomeTab extends StatelessWidget {
                   itemBuilder: (context, index) {
                     Ad ad = controller.ads[index];
 
-                    return Card(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        side: const BorderSide(
-                          color: Colors.black,
-                          width: 1.0,
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ListTile(
-                              leading: const CircleAvatar(
-                                backgroundImage:
-                                    AssetImage("images/user_avatar.png"),
+                    return !ad.isVisible
+                        ? const SizedBox
+                            .shrink() // hide the ad if it is not visible
+                        : Card(
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              side: const BorderSide(
+                                color: Colors.black,
+                                width: 1.0,
                               ),
-                              title: Text(
-                                ad.userName,
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                              subtitle: Row(
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Icon(
-                                    Icons.access_time,
-                                    size: 16,
-                                    color: AppColor.primaryColor,
+                                  ListTile(
+                                    leading: const CircleAvatar(
+                                      backgroundImage:
+                                          AssetImage("images/user_avatar.png"),
+                                    ),
+                                    title: Text(
+                                      ad.userName,
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                    subtitle: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.access_time,
+                                          size: 16,
+                                          color: AppColor.primaryColor,
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          timeago.format(ad.createdAt),
+                                          style: const TextStyle(fontSize: 11),
+                                        ),
+                                        const SizedBox(
+                                          width: 20,
+                                        ),
+                                        const Icon(
+                                          Icons.directions_run,
+                                          size: 16,
+                                          color: AppColor.primaryColor,
+                                        ),
+                                        Text(
+                                          "${ad.distance.toStringAsFixed(2)}m",
+                                          style: const TextStyle(fontSize: 11),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                  const SizedBox(width: 5),
                                   Text(
-                                    timeago.format(ad.createdAt),
-                                    style: const TextStyle(fontSize: 11),
+                                    ad.title,
+                                    style: const TextStyle(fontSize: 16),
                                   ),
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
-                                  const Icon(
-                                    Icons.directions_run,
-                                    size: 16,
-                                    color: AppColor.primaryColor,
-                                  ),
-                                  Text(
-                                    "${controller.getDistance(ad.lat, ad.lng).toStringAsFixed(2)}m",
-                                    style: const TextStyle(fontSize: 11),
+                                  const SizedBox(height: 10),
+                                  // text and call icons
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      OutlinedButton.icon(
+                                        onPressed: () {},
+                                        icon: const Icon(
+                                            Icons.chat_bubble_outline),
+                                        label: const Text("Chat"),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      OutlinedButton.icon(
+                                        onPressed: () {},
+                                        icon: const Icon(Icons.call),
+                                        label: const Text("Call"),
+                                        style: OutlinedButton.styleFrom(
+                                          backgroundColor:
+                                              AppColor.primaryColor,
+                                          foregroundColor: Colors.white,
+                                        ),
+                                      )
+                                    ],
                                   )
                                 ],
                               ),
                             ),
-                            Text(
-                              ad.title,
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                            const SizedBox(height: 10),
-                            // text and call icons
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                OutlinedButton.icon(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.chat_bubble_outline),
-                                  label: const Text("Chat"),
-                                ),
-                                const SizedBox(width: 10),
-                                OutlinedButton.icon(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.call),
-                                  label: const Text("Call"),
-                                  style: OutlinedButton.styleFrom(
-                                    backgroundColor: AppColor.primaryColor,
-                                    foregroundColor: Colors.white,
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    );
+                          );
                   },
                 );
               }

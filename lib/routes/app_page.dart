@@ -29,6 +29,6 @@ class AppPage {
     GetPage(name: confirmPin, page: () => const ConfirmPin()),
     GetPage(name: pinLogin, page: () => const PinLogin()),
     GetPage(name: finishProfile, page: () => const FinishProfile()),
-    GetPage(name: home, page: () => HomePage()),
+    GetPage(name: home, page: () => const HomePage()),
   ];
 }
