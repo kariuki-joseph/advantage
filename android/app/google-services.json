@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "842278875570",
+    "project_id": "advantage-5b7f7",
+    "storage_bucket": "advantage-5b7f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842278875570:android:651357fb7872d77ad234ab",
+        "android_client_info": {
+          "package_name": "com.example.advantage"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsUf3c-LBA9ZRuuPar-_ZybrTrYm2W5Q4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
