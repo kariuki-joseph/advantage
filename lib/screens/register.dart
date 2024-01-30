@@ -1,5 +1,6 @@
 import 'package:advantage/components/primary_button.dart';
-import 'package:advantage/routes/app_page.dart';
+import 'package:advantage/screens/auth/controllers/auth_controller.dart';
+import 'package:advantage/widgets/my_btn_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,9 +13,9 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   final List<String> _countryCodes = ["+254", "+1", "+44", "+91"];
+  final AuthController authController = Get.put(AuthController());
 
   String drowpdownValue = "+254";
-  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -65,34 +66,50 @@ class _RegisterState extends State<Register> {
                     },
                   ),
                   Expanded(
-                    child: TextFormField(
-                      decoration: const InputDecoration(hintText: "758826552"),
-                      keyboardType: TextInputType.phone,
+                    child: Form(
+                      key: authController.phoneFormKey,
+                      child: TextFormField(
+                        decoration:
+                            const InputDecoration(hintText: "758826552"),
+                        keyboardType: TextInputType.phone,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Phone number is required";
+                          }
+                          if (value.length < 9) {
+                            return "Phone number is too short";
+                          }
+                          if (value.length > 9) {
+                            return "Phone number is too long";
+                          }
+
+                          return null;
+                        },
+                        onChanged: (value) {
+                          authController.phone.value = "$drowpdownValue$value";
+                        },
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 50),
-            PrimaryButton(
-              onPressed: _isLoading
-                  ? null
-                  : () {
-                      setState(() {
-                        _isLoading = false;
-                      });
-                      // move to the next screen
-                      Get.toNamed(AppPage.verifyPhone);
-                    },
-              child: _isLoading
-                  ? const CircularProgressIndicator()
-                  : const Text(
-                      "Verify",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+            Obx(
+              () => PrimaryButton(
+                onPressed: () {
+                  authController.sendOTP();
+                },
+                child: authController.isLoading
+                    ? const MyBtnLoader()
+                    : const Text(
+                        "Verify",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
+              ),
             ),
             const SizedBox(height: 20),
           ],
