@@ -1,6 +1,7 @@
 import 'package:advantage/routes/app_page.dart';
 import 'package:advantage/screens/auth/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:advantage/models/user_model.dart';
 import 'package:get/get.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -13,24 +14,23 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   final AuthController authController = Get.put(AuthController());
+
   @override
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () async {
-      Get.offAllNamed(AppPage.home);
-      return;
-      // // check if user has already created an account, login if true
-      // UserModel savedUser =
-      //     await authController.getUserDetailsFromSharedPrefs();
+      // check if user has already created an account, login if true
+      UserModel savedUser =
+          await authController.getUserDetailsFromSharedPrefs();
 
-      // if (savedUser.id == "") {
-      //   // go to register page
-      //   Get.offAllNamed(AppPage.register);
-      //   return;
-      // }
+      if (savedUser.pin == "") {
+        // go to register page
+        Get.offAllNamed(AppPage.register);
+        return;
+      }
 
-      // // already registered, go to pin login page
-      // Get.offAllNamed(AppPage.pinLogin);
+      // already registered, go to pin login page
+      Get.offAllNamed(AppPage.pinLogin);
     });
   }
 

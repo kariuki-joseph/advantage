@@ -2,6 +2,7 @@ import 'package:advantage/constants/app_color.dart';
 import 'package:advantage/routes/app_page.dart';
 import 'package:advantage/screens/pin_login/components/pin_button.dart';
 import 'package:advantage/screens/pin_login/components/pin_field.dart';
+import 'package:advantage/screens/pin_login/controller/pin_login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,6 +14,8 @@ class PinLogin extends StatefulWidget {
 }
 
 class _PinLoginState extends State<PinLogin> {
+  final PinLoginController controller = Get.put(PinLoginController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,21 +37,45 @@ class _PinLoginState extends State<PinLogin> {
             const SizedBox(
               height: 10,
             ),
-            const Text(
-              "Enter your PIN to unlock",
-              style: TextStyle(fontSize: 16, color: Colors.white),
+            Obx(
+              () => Text(
+                controller.isPinWrong.value
+                    ? "Wrong PIN. Please try again."
+                    : "Enter your PIN to unlock",
+                style: TextStyle(
+                    fontSize: 16,
+                    color: controller.isPinWrong.value
+                        ? Colors.red
+                        : Colors.white),
+              ),
             ),
             const Spacer(),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                PinField(),
-                SizedBox(width: 10),
-                PinField(),
-                SizedBox(width: 10),
-                PinField(),
-                SizedBox(width: 10),
-                PinField(),
+                Obx(
+                  () => PinField(
+                    isFilled: controller.loginPin.isNotEmpty,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Obx(
+                  () => PinField(
+                    isFilled: controller.loginPin.length > 1,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Obx(
+                  () => PinField(
+                    isFilled: controller.loginPin.length > 2,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Obx(
+                  () => PinField(
+                    isFilled: controller.loginPin.length > 3,
+                  ),
+                ),
               ],
             ),
             const Spacer(),
@@ -56,7 +83,9 @@ class _PinLoginState extends State<PinLogin> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List<Widget>.generate(3, (index) {
                 return PinButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    controller.loginPin.add(index + 1);
+                  },
                   number: (index + 1).toString(),
                 );
               }),
@@ -68,7 +97,9 @@ class _PinLoginState extends State<PinLogin> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List<Widget>.generate(3, (index) {
                 return PinButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    controller.loginPin.add(index + 4);
+                  },
                   number: (index + 4).toString(),
                 );
               }),
@@ -80,7 +111,9 @@ class _PinLoginState extends State<PinLogin> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List<Widget>.generate(3, (index) {
                 return PinButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    controller.loginPin.add(index + 7);
+                  },
                   number: (index + 7).toString(),
                 );
               }),
@@ -91,17 +124,17 @@ class _PinLoginState extends State<PinLogin> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                PinButton(onPressed: () {}, number: "fingerPrint"),
                 PinButton(
-                    onPressed: () {
-                      Get.toNamed(AppPage.home);
-                    },
-                    number: "fingerPrint"),
-                PinButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    controller.loginPin.add(0);
+                  },
                   number: "0",
                 ),
                 PinButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    controller.deleteLastPin();
+                  },
                   number: "del",
                 ),
               ],
