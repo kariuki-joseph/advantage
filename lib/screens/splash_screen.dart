@@ -14,16 +14,16 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   final AuthController authController = Get.put(AuthController());
+
   @override
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () async {
-      Get.offAllNamed(AppPage.home);
       // check if user has already created an account, login if true
       UserModel savedUser =
           await authController.getUserDetailsFromSharedPrefs();
 
-      if (savedUser.id == "") {
+      if (savedUser.pin == "") {
         // go to register page
         Get.offAllNamed(AppPage.register);
         return;
