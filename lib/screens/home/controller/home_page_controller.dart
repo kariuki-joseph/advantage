@@ -23,8 +23,6 @@ class HomePageController extends GetxController {
     distanceFilter: 2, // notify me when I move 2 meters
   );
 
-  final int geofenceRadius = 5; // 5 meters
-
   final RxList<Ad> ads = RxList<Ad>();
 
   @override
@@ -39,7 +37,7 @@ class HomePageController extends GetxController {
       },
     );
 
-    /// initial configurations and checking for permissions
+    // initial configurations and checking for permissions
     initConfig();
     // get ads from firebase
     fetchAds();
@@ -131,7 +129,7 @@ class HomePageController extends GetxController {
     for (var ad in ads) {
       double distance = getDistance(ad.lat, ad.lng);
       ad.distance = distance;
-      ad.isVisible = distance <= geofenceRadius;
+      ad.isVisible = distance <= ad.discoveryRadius;
     }
 
     // sort in ascending order of distance
