@@ -9,6 +9,7 @@ class Ad {
   String userName;
   DateTime createdAt;
   double distance = 0.0;
+  double discoveryRadius;
   bool isVisible = true;
   Ad({
     required this.id,
@@ -16,6 +17,7 @@ class Ad {
     required this.description,
     required this.lat,
     required this.lng,
+    required this.discoveryRadius,
     required this.userId,
     required this.userName,
     required this.createdAt,
@@ -29,6 +31,7 @@ class Ad {
       'description': description,
       'lat': lat,
       'lng': lng,
+      'discoveryRadius': discoveryRadius,
       'userId': userId,
       'userName': userName,
       'postDate': createdAt,
@@ -43,6 +46,7 @@ class Ad {
       description: snapshot['description'],
       lat: snapshot['lat'],
       lng: snapshot['lng'],
+      discoveryRadius: snapshot['discoveryRadius'],
       userId: snapshot['userId'],
       userName: snapshot['userName'],
       createdAt: (snapshot['postDate'] as Timestamp).toDate(),
