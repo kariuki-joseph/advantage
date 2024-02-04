@@ -1,5 +1,4 @@
 import 'package:advantage/constants/app_color.dart';
-import 'package:advantage/routes/app_page.dart';
 import 'package:advantage/screens/pin_login/components/pin_button.dart';
 import 'package:advantage/screens/pin_login/components/pin_field.dart';
 import 'package:advantage/screens/pin_login/controller/pin_login_controller.dart';
