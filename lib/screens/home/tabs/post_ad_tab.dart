@@ -45,9 +45,12 @@ class PostAdTab extends StatelessWidget {
                     decoration: const InputDecoration(
                       labelText: "Ad Description",
                       hintText: "Enter Ad Description",
+                      alignLabelWithHint: true,
                       border: OutlineInputBorder(),
                     ),
+                    textAlign: TextAlign.start,
                     keyboardType: TextInputType.multiline,
+                    maxLines: 4,
                     controller: controller.descriptionController,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -57,7 +60,24 @@ class PostAdTab extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 10),
-                  const Text("Add all the description related to this Ad"),
+                  const Text(
+                      "Discovery radius is the radius within which your ad will be visible to other users."),
+                  const SizedBox(height: 10),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: "Discovery Radius (Metres)",
+                      hintText: "Discovery Radius (Metres)",
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.number,
+                    controller: controller.discoveryRadiusController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter discovery radius";
+                      }
+                      return null;
+                    },
+                  ),
                   const SizedBox(height: 20),
                   Obx(
                     () => OutlinedButton.icon(
