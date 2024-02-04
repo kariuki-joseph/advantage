@@ -13,6 +13,8 @@ class PostAdController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController discoveryRadiusController =
+      TextEditingController();
   final HomePageController homePageController = Get.find();
   final isLoading = false.obs;
   final isLocationLoading = false.obs;
@@ -26,9 +28,16 @@ class PostAdController extends GetxController {
   final UserModel loggedInUser = Get.put(UserModel());
 
   @override
+  void onInit() {
+    discoveryRadiusController.text = "5";
+    super.onInit();
+  }
+
+  @override
   void onClose() {
     titleController.dispose();
     descriptionController.dispose();
+    discoveryRadiusController.dispose();
     super.onClose();
   }
 
@@ -71,6 +80,7 @@ class PostAdController extends GetxController {
         lat: lat.value,
         lng: lng.value,
         createdAt: DateTime.now(),
+        discoveryRadius: double.parse(discoveryRadiusController.text),
         userId: loggedInUser.id == "" ? "123" : loggedInUser.id,
         userName:
             loggedInUser.username == "" ? "Test User" : loggedInUser.username,
