@@ -1,5 +1,6 @@
 import 'package:advantage/models/ad.dart';
 import 'package:advantage/models/user_model.dart';
+import 'package:advantage/screens/auth/controllers/auth_controller.dart';
 import 'package:advantage/screens/home/controller/home_page_controller.dart';
 import 'package:advantage/utils/toast_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,11 +12,14 @@ import 'package:permission_handler/permission_handler.dart';
 
 class PostAdController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final AuthController authController = Get.put(AuthController());
+
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController discoveryRadiusController =
       TextEditingController();
   final HomePageController homePageController = Get.find();
+
   final isLoading = false.obs;
   final isLocationLoading = false.obs;
   final isLocationSelected = false.obs;
@@ -24,12 +28,12 @@ class PostAdController extends GetxController {
   final lat = 0.0.obs;
   final lng = 0.0.obs;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-  final UserModel loggedInUser = Get.put(UserModel());
+  late UserModel loggedInUser;
 
   @override
-  void onInit() {
+  void onInit() async {
     discoveryRadiusController.text = "5";
+    loggedInUser = await authController.getUserDetailsFromSharedPrefs();
     super.onInit();
   }
 
@@ -64,6 +68,13 @@ class PostAdController extends GetxController {
   }
 
   Future<void> postAd() async {
+    // check if user is logged in before posting an ad
+    if (loggedInUser.phone == '') {
+      Fluttertoast.showToast(
+          msg: "You must be logged in to post", toastLength: Toast.LENGTH_LONG);
+      return;
+    }
+
     if (formKey.currentState!.validate()) {
       String adId = _firestore.collection("ads").doc().id;
       // validate that location is not null
@@ -81,7 +92,7 @@ class PostAdController extends GetxController {
         lng: lng.value,
         createdAt: DateTime.now(),
         discoveryRadius: double.parse(discoveryRadiusController.text),
-        userId: loggedInUser.id == "" ? "123" : loggedInUser.id,
+        userId: loggedInUser.phone == "" ? "123" : loggedInUser.phone,
         userName:
             loggedInUser.username == "" ? "Test User" : loggedInUser.username,
       );

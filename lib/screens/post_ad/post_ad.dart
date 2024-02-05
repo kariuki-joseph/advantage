@@ -1,11 +1,11 @@
 import 'package:advantage/constants/app_color.dart';
-import 'package:advantage/screens/home/controller/post_ad_controller.dart';
+import 'package:advantage/screens/post_ad/controller/post_ad_controller.dart';
 import 'package:advantage/widgets/my_btn_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class PostAdTab extends StatelessWidget {
-  PostAdTab({super.key});
+class PostAd extends StatelessWidget {
+  PostAd({super.key});
   final PostAdController controller = Get.put(PostAdController());
 
   @override
@@ -13,7 +13,6 @@ class PostAdTab extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false,
           title: const Text("Post Ad"),
         ),
         body: Padding(

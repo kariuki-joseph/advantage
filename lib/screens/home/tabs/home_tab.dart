@@ -22,7 +22,7 @@ class HomeTab extends StatelessWidget {
           children: [
             // search
             Expanded(
-              child: TextField(
+              child: TextFormField(
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: AppColor.searchBarBackground,
@@ -30,16 +30,30 @@ class HomeTab extends StatelessWidget {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(28),
                       borderSide: BorderSide.none),
-                  prefixIcon: const Padding(
-                    padding: EdgeInsets.all(10),
-                    child: CircleAvatar(
-                      backgroundImage: AssetImage("images/user_avatar.png"),
+                  prefixIcon: GestureDetector(
+                    onTap: () {
+                      // do nothing
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.fromLTRB(10, 0, 1, 0),
+                      // user icon
+                      child: Icon(Icons.account_circle),
                     ),
                   ),
                   suffixIcon: null,
                 ),
               ),
             ),
+            const SizedBox(width: 10),
+            InkWell(
+              onTap: () {
+                controller.fetchAds();
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: Image.asset("images/refresh.png", width: 40, height: 40),
+              ),
+            )
           ],
         ),
         const SizedBox(height: 10),
@@ -55,92 +69,87 @@ class HomeTab extends StatelessWidget {
                   itemBuilder: (context, index) {
                     Ad ad = controller.ads[index];
 
-                    return !ad.isVisible
-                        ? const SizedBox
-                            .shrink() // hide the ad if it is not visible
-                        : Card(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              side: const BorderSide(
-                                color: Colors.black,
-                                width: 1.0,
+                    return Card(
+                      color: ad.isVisible ? Colors.white : Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        side: const BorderSide(
+                          color: Colors.black,
+                          width: 1.0,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ListTile(
+                              leading: const CircleAvatar(
+                                backgroundImage:
+                                    AssetImage("images/user_avatar.png"),
                               ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              title: Text(
+                                ad.userName,
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                              subtitle: Row(
                                 children: [
-                                  ListTile(
-                                    leading: const CircleAvatar(
-                                      backgroundImage:
-                                          AssetImage("images/user_avatar.png"),
-                                    ),
-                                    title: Text(
-                                      ad.userName,
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                    subtitle: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.access_time,
-                                          size: 16,
-                                          color: AppColor.primaryColor,
-                                        ),
-                                        const SizedBox(width: 5),
-                                        Text(
-                                          timeago.format(ad.createdAt),
-                                          style: const TextStyle(fontSize: 11),
-                                        ),
-                                        const SizedBox(
-                                          width: 20,
-                                        ),
-                                        const Icon(
-                                          Icons.directions_run,
-                                          size: 16,
-                                          color: AppColor.primaryColor,
-                                        ),
-                                        Text(
-                                          "${ad.distance.toStringAsFixed(2)}m",
-                                          style: const TextStyle(fontSize: 11),
-                                        )
-                                      ],
-                                    ),
+                                  const Icon(
+                                    Icons.access_time,
+                                    size: 16,
+                                    color: AppColor.primaryColor,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    timeago.format(ad.createdAt),
+                                    style: const TextStyle(fontSize: 11),
+                                  ),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  const Icon(
+                                    Icons.directions_run,
+                                    size: 16,
+                                    color: AppColor.primaryColor,
                                   ),
                                   Text(
-                                    ad.title,
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  // text and call icons
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      OutlinedButton.icon(
-                                        onPressed: () {},
-                                        icon: const Icon(
-                                            Icons.chat_bubble_outline),
-                                        label: const Text("Chat"),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      OutlinedButton.icon(
-                                        onPressed: () {},
-                                        icon: const Icon(Icons.call),
-                                        label: const Text("Call"),
-                                        style: OutlinedButton.styleFrom(
-                                          backgroundColor:
-                                              AppColor.primaryColor,
-                                          foregroundColor: Colors.white,
-                                        ),
-                                      )
-                                    ],
+                                    "${ad.distance.toStringAsFixed(2)}m",
+                                    style: const TextStyle(fontSize: 11),
                                   )
                                 ],
                               ),
                             ),
-                          );
+                            Text(
+                              ad.title,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                            const SizedBox(height: 10),
+                            // text and call icons
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                OutlinedButton.icon(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.chat_bubble_outline),
+                                  label: const Text("Chat"),
+                                ),
+                                const SizedBox(width: 10),
+                                OutlinedButton.icon(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.call),
+                                  label: const Text("Call"),
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: AppColor.primaryColor,
+                                    foregroundColor: Colors.white,
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    );
                   },
                 );
               }

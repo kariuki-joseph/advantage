@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'AdVantage',
+      title: 'ADvantage',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: AppColor.primaryColor),
         primaryColor: const Color.fromRGBO(0, 84, 214, 1),

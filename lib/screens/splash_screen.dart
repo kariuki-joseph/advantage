@@ -23,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
       UserModel savedUser =
           await authController.getUserDetailsFromSharedPrefs();
 
-      if (savedUser.pin == "") {
+      if (savedUser.pin == "" || savedUser.phone == "") {
         // go to register page
         Get.offAllNamed(AppPage.register);
         return;
