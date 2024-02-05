@@ -47,4 +47,18 @@ class MyAdsController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  // delete an ad
+  Future<void> deleteAd(String adId) async {
+    isLoading.value = true;
+
+    try {
+      await _firestore.collection("ads").doc(adId).delete();
+      await fetchMyAds();
+    } catch (e) {
+      showErrorToast(e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }
