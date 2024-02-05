@@ -152,7 +152,24 @@ class MyAdsTab extends StatelessWidget {
                                                           .spaceAround,
                                                   children: [
                                                     OutlinedButton.icon(
-                                                      onPressed: () {},
+                                                      onPressed: () {
+                                                        // show confirm dialog
+                                                        Get.defaultDialog(
+                                                          title: "Delete Ad",
+                                                          middleText:
+                                                              "Are you sure you want to delete this ad?",
+                                                          textConfirm: "Yes",
+                                                          textCancel: "No",
+                                                          confirmTextColor:
+                                                              Colors.white,
+                                                          buttonColor: AppColor
+                                                              .primaryColor,
+                                                          onConfirm: () {
+                                                            controller.deleteAd(
+                                                                ad.id);
+                                                          },
+                                                        );
+                                                      },
                                                       icon: const Icon(Icons
                                                           .delete_outlined),
                                                       style: OutlinedButton
