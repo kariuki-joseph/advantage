@@ -41,12 +41,6 @@ class UpdateAdController extends GetxController {
   ));
 
   @override
-  void onInit() {
-    discoveryRadiusController.text = "5";
-    super.onInit();
-  }
-
-  @override
   void onClose() {
     debugPrint("updateAdOnClose: ${adToUpdate.value}");
     titleController.dispose();
