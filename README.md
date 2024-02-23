@@ -14,7 +14,6 @@ As you move, some ads show while others disappear depending on the location and 
 ![Home(2)](https://github.com/kariuki-joseph/advantage/assets/70845241/0f206122-5816-4c50-b92b-cab69597f9d5)
 ![Homeenter-radius](https://github.com/kariuki-joseph/advantage/assets/70845241/6a7ad66b-7d81-4693-bcac-058d57a245e6)
 ![My Adsmy-ads](https://github.com/kariuki-joseph/advantage/assets/70845241/6eeb9c0c-198f-47e5-bce9-566a614c4a8d)
-<img src="https://github.com/kariuki-joseph/advantage/assets/70845241/af25b5ff-401d-4a26-a965-047691f53cd3" alt="Your Image" width="426" height="auto">
 ![SlashScreen(2)](https://github.com/kariuki-joseph/advantage/assets/70845241/c6810c98-9cac-442c-9f08-f623924f4369)
 ![Registration](https://github.com/kariuki-joseph/advantage/assets/70845241/de013adb-d1eb-4fae-bb02-36d6b255fda1)
 ![Countries Selection](https://github.com/kariuki-joseph/advantage/assets/70845241/4fdb78cb-4034-4c9b-89e8-2e06ed2d892e)
