@@ -4,12 +4,11 @@ A flutter application that solves the issue of outdoor advertisement. Both adver
 This solution uses geofening technology to get ads that are within a user's geographical location and advertisers also can target customers within their location.  
 As you move, some ads show while others disappear depending on the location and geofence radius.
 
-## Technologies Used
+## Core Technologies Used
 - Flutter Framework
 - GetX State Management
 - Google Material Theme
 - Geolocation APIs
-- etc.
 
 ## Sample Screens
 ![Home(2)](https://github.com/kariuki-joseph/advantage/assets/70845241/0f206122-5816-4c50-b92b-cab69597f9d5)
