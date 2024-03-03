@@ -86,19 +86,18 @@ class HomeTab extends StatelessWidget {
                               ),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 10),
+                              padding: const EdgeInsets.fromLTRB(10, 0, 10, 16),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   ListTile(
-                                    leading: const CircleAvatar(
-                                      backgroundImage:
-                                          AssetImage("images/user_avatar.png"),
-                                    ),
+                                    contentPadding: EdgeInsets.zero,
+                                    leading: const Icon(
+                                        Icons.account_circle_outlined),
                                     title: Text(
                                       ad.userName,
-                                      style: const TextStyle(fontSize: 16),
+                                      style: const TextStyle(fontSize: 12),
                                     ),
                                     subtitle: Row(
                                       children: [
@@ -129,6 +128,13 @@ class HomeTab extends StatelessWidget {
                                   ),
                                   Text(
                                     ad.title,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    ad.description,
                                     style: const TextStyle(fontSize: 16),
                                   ),
                                   const SizedBox(height: 10),
