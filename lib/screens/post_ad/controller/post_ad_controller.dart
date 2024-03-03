@@ -2,6 +2,7 @@ import 'package:advantage/models/ad.dart';
 import 'package:advantage/models/user_model.dart';
 import 'package:advantage/screens/auth/controllers/auth_controller.dart';
 import 'package:advantage/screens/home/controller/home_page_controller.dart';
+import 'package:advantage/screens/home/controller/my_ads_controller.dart';
 import 'package:advantage/utils/toast_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ class PostAdController extends GetxController {
   final TextEditingController discoveryRadiusController =
       TextEditingController();
   final HomePageController homePageController = Get.find();
+  final MyAdsController myAdsController = Get.find();
 
   final isLoading = false.obs;
   final isLocationLoading = false.obs;
@@ -106,6 +108,7 @@ class PostAdController extends GetxController {
 
         // refresh the ads in home page
         homePageController.fetchAds();
+        myAdsController.fetchMyAds();
       } catch (e) {
         showErrorToast(e.toString());
       } finally {

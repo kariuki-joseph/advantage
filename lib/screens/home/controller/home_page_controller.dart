@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:advantage/models/ad.dart';
 import 'package:advantage/utils/toast_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -134,5 +135,15 @@ class HomePageController extends GetxController {
 
     // sort in ascending order of distance
     ads.sort((a, b) => a.distance.compareTo(b.distance));
+  }
+
+  // function to manually get the live position of a user
+  void updateLiveLocation() async {
+    Position position = await _determinePosition();
+    myLat.value = position.latitude;
+    myLng.value = position.longitude;
+    debugPrint(
+        "Location updated to: ${position.latitude}, ${position.longitude}");
+    recalculateDistances();
   }
 }
