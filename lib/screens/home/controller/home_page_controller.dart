@@ -17,6 +17,8 @@ class HomePageController extends GetxController {
 
   final isLoading = false.obs;
 
+  final Rx<RangeValues> rangeValues = Rx<RangeValues>(RangeValues(1, 50));
+
   StreamSubscription<Position>? _positionStreamSubscription;
 
   final LocationSettings locationSettings = const LocationSettings(
@@ -42,6 +44,11 @@ class HomePageController extends GetxController {
     initConfig();
     // get ads from firebase
     fetchAds();
+
+    // get ads when user adjusts search radius
+    ever(rangeValues, (_) {
+      getAdsWithRadius();
+    });
 
     super.onInit();
   }
@@ -145,5 +152,13 @@ class HomePageController extends GetxController {
     debugPrint(
         "Location updated to: ${position.latitude}, ${position.longitude}");
     recalculateDistances();
+  }
+
+// get ads when users's geofence radius changes
+  void getAdsWithRadius() {
+    // get ads from firebase
+    Fluttertoast.showToast(
+        msg:
+            "Getting ads within range: ${rangeValues.value.start}-${rangeValues.value.end}");
   }
 }
