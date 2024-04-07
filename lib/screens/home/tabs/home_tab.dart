@@ -58,6 +58,29 @@ class HomeTab extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 10),
+        const Center(child: Text("Adjust Search Radius")),
+        Row(
+          children: [
+            Expanded(
+              child: Obx(
+                () => RangeSlider(
+                  values: controller.rangeValues.value,
+                  onChanged: (RangeValues values) {
+                    controller.rangeValues.value = values;
+                  },
+                  min: 0,
+                  max: 100,
+                  divisions: 100,
+                  labels: RangeLabels(
+                    controller.rangeValues.value.start.round().toString(),
+                    controller.rangeValues.value.end.round().toString(),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
         // Body
         Expanded(
           child: Obx(
