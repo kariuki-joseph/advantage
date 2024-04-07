@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:advantage/models/ad.dart';
 import 'package:advantage/models/user_model.dart';
