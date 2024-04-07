@@ -123,7 +123,7 @@ class PostAd extends StatelessWidget {
                         controller.postAd();
                       },
                       child: controller.isLoading.value
-                          ? const MyBtnLoader(color: Colors.white, large: true)
+                          ? const MyBtnLoader(large: true)
                           : const Text(
                               "Post",
                               style: TextStyle(
