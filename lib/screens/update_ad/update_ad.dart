@@ -130,7 +130,7 @@ class UpdateAd extends StatelessWidget {
                         controller.updateAd();
                       },
                       child: controller.isLoading.value
-                          ? const MyBtnLoader(color: Colors.white, large: true)
+                          ? const MyBtnLoader(large: true)
                           : const Text(
                               "Update",
                               style: TextStyle(
