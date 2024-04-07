@@ -18,7 +18,7 @@ class _PinLoginState extends State<PinLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColor.primaryColor,
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         width: MediaQuery.of(context).size.width,
