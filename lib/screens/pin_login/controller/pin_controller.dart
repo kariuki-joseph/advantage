@@ -1,51 +1,62 @@
-import 'package:advantage/routes/app_page.dart';
-import 'package:advantage/screens/pin_login/confirm_pin.dart';
-import 'package:advantage/screens/pin_login/setup_pin.dart';
-import 'package:advantage/utils/toast_utils.dart';
+import 'package:advantage/models/user_model.dart';
+import 'package:advantage/routes/app_routes.dart';
+import 'package:advantage/screens/auth/controllers/auth_controller.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class PinController extends GetxController {
   final pin = [].obs;
-  final repeatPin = [].obs;
+  String pin1 = ""; // first pin
+  final AuthController authController = Get.find<AuthController>();
+  UserModel? loggedInUser;
+  final message = "Setup your PIN".obs;
+  final hasError = false.obs;
+  bool isRepeat = false;
 
   @override
   void onInit() {
+    loggedInUser = authController.user.value;
     super.onInit();
-    // listen to pin changes and navigate to confirm pin screen
-    ever(pin, (_) {
-      if (pin.length == 4) {
-        // move to confirm pin activity
-        Get.to(
-          () => const ConfirmPin(),
-          transition: Transition.rightToLeft,
-          duration: const Duration(milliseconds: 800),
-        );
-      }
-    });
-
     // listen to repeat pin changes and check if they are correct
-    ever(repeatPin, (_) {
-      if (repeatPin.length == 4) {
-        // check if pin and repeat pin are the same
-        if (pin.toString() == repeatPin.toString()) {
-          // save pin to local storage
-          savePinToSharedPrefs();
-          // move to home screen
-          Get.offAllNamed(AppPage.home);
-        } else {
-          // show error message
-          showErrorToast("PINs did not match");
-          // clear repeat pin
+    ever(pin, (_) async {
+      if (pin.length == 4) {
+        if (!isRepeat) {
+          // save first pin
+          pin1 = pin.join('');
+          // wait for 200ms then clear pin
+          await Future.delayed(const Duration(milliseconds: 200));
           pin.clear();
-          repeatPin.clear();
-
-          Get.to(
-            () => const SetupPin(),
-            transition: Transition.leftToRight,
-            duration: const Duration(milliseconds: 800),
-          );
+          isRepeat = true;
+          // update message
+          message.value = "Repeat PIN";
+          return;
         }
+
+        // check if pin and repeat pin are the same
+        if (pin1.toString() != pin.join("")) {
+          message.value = "PINs do not match";
+          hasError.value = true;
+          // wait for 1 second then clear pin
+          await Future.delayed(const Duration(milliseconds: 2000));
+          pin.clear();
+          message.value = "Setup your PIN";
+          hasError.value = false;
+          isRepeat = false;
+          return;
+        }
+
+        // update pin to authController
+        authController.user.update((val) {
+          val!.pin = pin.join('');
+        });
+
+        // save pin to local storage
+        await authController.saveUserDetailsToSharedPrefs();
+
+        // update to firebase
+        await authController.updateUserToFirebase();
+
+        // move to home screen
+        Get.offAllNamed(AppRoutes.home);
       }
     });
   }
@@ -58,21 +69,9 @@ class PinController extends GetxController {
   }
 
   // delete last repeat pin
-  void deleteLastRepeatPin() {
-    if (repeatPin.isNotEmpty) {
-      repeatPin.removeLast();
+  void deleteLastpin() {
+    if (pin.isNotEmpty) {
+      pin.removeLast();
     }
-  }
-
-  // save pin to local storage
-  Future<void> savePinToSharedPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('pin', pin.join(''));
-  }
-
-  // get pin from local storage
-  Future<String?> getPinFromSharedPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('pin');
   }
 }
