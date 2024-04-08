@@ -1,6 +1,7 @@
 import 'package:advantage/components/primary_button.dart';
 import 'package:advantage/constants/app_color.dart';
 import 'package:advantage/routes/app_page.dart';
+import 'package:advantage/routes/app_routes.dart';
 import 'package:advantage/screens/phone_verification/components/single_button.dart';
 import 'package:advantage/screens/phone_verification/components/single_pin_field.dart';
 import 'package:flutter/material.dart';
@@ -102,7 +103,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
               const SizedBox(height: 10),
               PrimaryButton(
                 onPressed: () {
-                  Get.toNamed(AppPage.verificationSuccess);
+                  Get.toNamed(AppRoutes.verificationSuccess);
                 },
                 child: const Text(
                   "Verify",

@@ -1,5 +1,6 @@
 import 'package:advantage/components/primary_button.dart';
 import 'package:advantage/routes/app_page.dart';
+import 'package:advantage/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -37,7 +38,7 @@ class VerificationSuccess extends StatelessWidget {
             const Spacer(),
             PrimaryButton(
               onPressed: () {
-                Get.toNamed(AppPage.finishProfile);
+                Get.toNamed(AppRoutes.finishProfile);
               },
               child: const Text("Continue"),
             ),

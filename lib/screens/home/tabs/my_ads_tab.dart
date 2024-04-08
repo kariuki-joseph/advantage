@@ -1,6 +1,6 @@
 import 'package:advantage/constants/app_color.dart';
 import 'package:advantage/models/ad.dart';
-import 'package:advantage/routes/app_page.dart';
+import 'package:advantage/routes/app_routes.dart';
 import 'package:advantage/screens/home/controller/my_ads_controller.dart';
 import 'package:advantage/screens/update_ad/controller/controller/update_ad_controller.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +28,7 @@ class MyAdsTab extends StatelessWidget {
               Center(
                 child: OutlinedButton.icon(
                   onPressed: () {
-                    Get.toNamed(AppPage.postAd);
+                    Get.toNamed(AppRoutes.postAd);
                   },
                   icon: const Icon(Icons.add),
                   style: OutlinedButton.styleFrom(
@@ -192,7 +192,7 @@ class MyAdsTab extends StatelessWidget {
                                                         updateAdController
                                                             .setAdToUpdate(ad);
                                                         Get.toNamed(
-                                                            AppPage.updateAd);
+                                                            AppRoutes.updateAd);
                                                       },
                                                       icon: const Icon(
                                                           Icons.edit),
