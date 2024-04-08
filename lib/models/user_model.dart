@@ -21,7 +21,7 @@ class UserModel {
 
   // Setters
   set id(String value) {
-    id = value;
+    _id = value;
   }
 
   set username(String value) {
@@ -61,6 +61,7 @@ class UserModel {
   // factory to create user from firestore
   factory UserModel.fromDocument(DocumentSnapshot snapshot) {
     return UserModel(
+      id: snapshot.id,
       username: snapshot['username'],
       email: snapshot['email'],
       phone: snapshot['phone'],
