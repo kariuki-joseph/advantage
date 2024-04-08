@@ -30,12 +30,11 @@ class PostAdController extends GetxController {
   final lat = 0.0.obs;
   final lng = 0.0.obs;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  late UserModel loggedInUser;
+  late UserModel loggedInUser = Get.find<AuthController>().user.value;
 
   @override
   void onInit() async {
     discoveryRadiusController.text = "5";
-    loggedInUser = await authController.getUserDetailsFromSharedPrefs();
     super.onInit();
   }
 

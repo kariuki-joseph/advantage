@@ -1,7 +1,8 @@
-import 'package:advantage/constants/app_color.dart';
+import 'package:advantage/routes/app_routes.dart';
 import 'package:advantage/screens/pin_login/components/pin_button.dart';
 import 'package:advantage/screens/pin_login/components/pin_field.dart';
 import 'package:advantage/screens/pin_login/controller/pin_login_controller.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,7 +14,8 @@ class PinLogin extends StatefulWidget {
 }
 
 class _PinLoginState extends State<PinLogin> {
-  final PinLoginController controller = Get.put(PinLoginController());
+  final PinLoginController controller =
+      Get.put(PinLoginController(phoneNumber: Get.arguments ?? ""));
 
   @override
   Widget build(BuildContext context) {
@@ -40,12 +42,17 @@ class _PinLoginState extends State<PinLogin> {
               () => Text(
                 controller.isPinWrong.value
                     ? "Wrong PIN. Please try again."
-                    : "Enter your PIN to unlock",
+                    : controller.isLoginSuccess.value
+                        ? "Login Successful"
+                        : "Enter your PIN to unlock",
                 style: TextStyle(
-                    fontSize: 16,
-                    color: controller.isPinWrong.value
-                        ? Colors.red
-                        : Colors.white),
+                  fontSize: 16,
+                  color: controller.isPinWrong.value
+                      ? Colors.red
+                      : controller.isLoginSuccess.value
+                          ? Colors.green
+                          : Colors.white,
+                ),
               ),
             ),
             const Spacer(),
@@ -137,6 +144,26 @@ class _PinLoginState extends State<PinLogin> {
                   number: "del",
                 ),
               ],
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Center(
+              child: RichText(
+                text: TextSpan(children: [
+                  TextSpan(
+                    text: "Forgot PIN? ",
+                    style: Get.theme.textTheme.labelLarge?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        Get.toNamed(AppRoutes.phoneLogin);
+                      },
+                  ),
+                ]),
+              ),
             ),
             const Spacer(),
           ],

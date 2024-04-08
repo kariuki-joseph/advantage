@@ -1,5 +1,5 @@
 import 'package:advantage/components/primary_button.dart';
-import 'package:advantage/routes/app_page.dart';
+import 'package:advantage/routes/app_routes.dart';
 import 'package:advantage/screens/auth/controllers/auth_controller.dart';
 import 'package:advantage/widgets/my_btn_loader.dart';
 import 'package:flutter/gestures.dart';
@@ -16,8 +16,6 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   final List<String> _countryCodes = ["+254", "+1", "+44", "+91"];
   final AuthController authController = Get.put(AuthController());
-
-  String drowpdownValue = "+254";
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +98,7 @@ class _RegisterState extends State<Register> {
                     contentPadding: EdgeInsets.zero,
                     leading: DropdownButton<String>(
                       underline: const SizedBox(),
-                      value: drowpdownValue,
+                      value: authController.phonePrefix,
                       items: _countryCodes
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
@@ -110,7 +108,7 @@ class _RegisterState extends State<Register> {
                       }).toList(),
                       onChanged: (value) {
                         setState(() {
-                          drowpdownValue = value!;
+                          authController.phonePrefix = value!;
                         });
                       },
                     ),
@@ -135,9 +133,6 @@ class _RegisterState extends State<Register> {
 
                         return null;
                       },
-                      onChanged: (value) {
-                        authController.phone.value = "$drowpdownValue$value";
-                      },
                       controller: authController.phoneController,
                     ),
                   ),
@@ -150,14 +145,11 @@ class _RegisterState extends State<Register> {
                     // save details and move to next screen
                     authController.registerUser();
                   },
-                  child: authController.isLoading
+                  child: authController.isLoading.value
                       ? const MyBtnLoader(
                           large: true,
                         )
-                      : Text(
-                          "Get Started",
-                          style: Get.theme.textTheme.labelLarge,
-                        ),
+                      : const Text("Get Started"),
                 ),
               ),
               const SizedBox(height: 20),
@@ -170,11 +162,11 @@ class _RegisterState extends State<Register> {
                       TextSpan(
                         text: "Login",
                         style: Get.theme.textTheme.bodyLarge?.copyWith(
-                          color: Colors.blue,
+                          color: Get.theme.colorScheme.primary,
                           fontWeight: FontWeight.bold,
                         ),
                         recognizer: TapGestureRecognizer()
-                          ..onTap = () => Get.toNamed(AppPage.pinLogin),
+                          ..onTap = () => Get.toNamed(AppRoutes.phoneLogin),
                       ),
                     ],
                   ),
