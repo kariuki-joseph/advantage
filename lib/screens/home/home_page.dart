@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final HomePageController controller = Get.put(HomePageController());
+  final HomePageController controller = Get.find();
   int _currentIndex = 0;
   final _pageController = PageController();
 
