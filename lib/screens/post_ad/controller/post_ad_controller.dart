@@ -13,12 +13,14 @@ import 'package:permission_handler/permission_handler.dart';
 
 class PostAdController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final AuthController authController = Get.put(AuthController());
+  final AuthController authController = Get.find<AuthController>();
 
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController discoveryRadiusController =
       TextEditingController();
+  final TextEditingController tagsController = TextEditingController();
+
   final HomePageController homePageController = Get.find();
   final MyAdsController myAdsController = Get.find();
 
@@ -26,6 +28,8 @@ class PostAdController extends GetxController {
   final isLocationLoading = false.obs;
   final isLocationSelected = false.obs;
   final locationError = false.obs;
+  final tags = <String>[].obs;
+  final int maxTags = 5;
 
   final lat = 0.0.obs;
   final lng = 0.0.obs;
@@ -79,9 +83,15 @@ class PostAdController extends GetxController {
     if (formKey.currentState!.validate()) {
       String adId = _firestore.collection("ads").doc().id;
       // validate that location is not null
-      if (lat.value == 0.0 || lng.value == 0.0) {
-        locationError.value = true;
-        showErrorToast("Please select location");
+      // if (lat.value == 0.0 || lng.value == 0.0) {
+      //   locationError.value = true;
+      //   showErrorToast("Please select location");
+      //   return;
+      // }
+
+      // validate at least one tag
+      if (tags.isEmpty) {
+        showErrorToast("Please add at least one tag");
         return;
       }
 
@@ -93,10 +103,11 @@ class PostAdController extends GetxController {
         lng: lng.value,
         createdAt: DateTime.now(),
         discoveryRadius: double.parse(discoveryRadiusController.text),
-        userId: loggedInUser.phone == "" ? "123" : loggedInUser.phone,
-        userName:
-            loggedInUser.username == "" ? "Test User" : loggedInUser.username,
+        userId: loggedInUser.phone,
+        userName: loggedInUser.username,
+        tags: tags,
       );
+
       try {
         isLoading.value = true;
 
@@ -120,9 +131,20 @@ class PostAdController extends GetxController {
   void _resetForm() {
     titleController.clear();
     descriptionController.clear();
+    tagsController.clear();
+    discoveryRadiusController.text = "5";
+    tags.clear();
     lat.value = 0.0;
     lng.value = 0.0;
     isLocationSelected.value = false;
     locationError.value = false;
+  }
+
+// add tags to the list
+  void addTag() {
+    if (tagsController.text.isNotEmpty) {
+      tags.add(tagsController.text);
+      tagsController.clear();
+    }
   }
 }
