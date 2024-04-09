@@ -12,13 +12,9 @@ class AuthMiddleware extends GetMiddleware {
     // check if user is authenticated
     // redirect to login if user is not logged in
     final AuthController authController = Get.find<AuthController>();
-    debugPrint("Checking if user is authenticated before accessing $route");
     if (!authController.isLoggedIn) {
-      debugPrint("User is not authenticated");
       return const RouteSettings(name: AppRoutes.pinLogin);
     }
-
-    debugPrint("User is authenticated");
     return null;
   }
 }

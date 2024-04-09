@@ -131,7 +131,7 @@ class HomePageController extends GetxController {
 
   // recalculate distances once the location changes
   void recalculateDistances() {
-    Fluttertoast.showToast(msg: "Recalculating distance....");
+    // Fluttertoast.showToast(msg: "Recalculating distance....");
 
     // update visibility of ads based on the geofence radius
     for (var ad in ads) {
