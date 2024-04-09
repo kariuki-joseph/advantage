@@ -1,4 +1,5 @@
 import 'package:advantage/bindings/home_page_binding.dart';
+import 'package:advantage/bindings/post_ad_binding.dart';
 import 'package:advantage/middlewares/auth_middleware.dart';
 import 'package:advantage/routes/app_routes.dart';
 import 'package:advantage/screens/finish_profile/finish_profile.dart';
@@ -62,6 +63,7 @@ class AppPage {
       name: AppRoutes.postAd,
       page: () => PostAd(),
       transition: Transition.native,
+      binding: PostAdBinding(),
       transitionDuration: const Duration(milliseconds: 600),
     ),
     GetPage(
