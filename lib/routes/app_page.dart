@@ -1,9 +1,11 @@
 import 'package:advantage/bindings/home_page_binding.dart';
+import 'package:advantage/bindings/notifications_binding.dart';
 import 'package:advantage/bindings/post_ad_binding.dart';
 import 'package:advantage/middlewares/auth_middleware.dart';
 import 'package:advantage/routes/app_routes.dart';
 import 'package:advantage/screens/finish_profile/finish_profile.dart';
 import 'package:advantage/screens/home/home_page.dart';
+import 'package:advantage/screens/notifications/notifications_page.dart';
 import 'package:advantage/screens/phone_verification/phone_verification.dart';
 import 'package:advantage/screens/pin_login/phone_login.dart';
 import 'package:advantage/screens/pin_login/setup_pin.dart';
@@ -72,5 +74,10 @@ class AppPage {
       transition: Transition.zoom,
       transitionDuration: const Duration(milliseconds: 600),
     ),
+    GetPage(
+      name: AppRoutes.notifications,
+      binding: NotificationsBinding(),
+      page: () => NotificationsPage(),
+    )
   ];
 }

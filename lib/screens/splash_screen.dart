@@ -1,4 +1,3 @@
-import 'package:advantage/routes/app_page.dart';
 import 'package:advantage/routes/app_routes.dart';
 import 'package:advantage/screens/auth/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
@@ -36,15 +35,20 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset("images/logo.png", fit: BoxFit.contain),
             const SizedBox(height: 20),
-            const Text("AdVantage",
-                style: TextStyle(fontSize: 42, color: Colors.white))
+            Text(
+              "ADvantage",
+              style: TextStyle(
+                fontSize: 42,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            )
           ],
         ),
       ),

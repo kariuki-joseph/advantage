@@ -10,4 +10,5 @@ class AppRoutes {
   static const String postAd = "/post-ad";
   static const String updateAd = "/update-ad";
   static const String phoneLogin = '/login';
+  static const String notifications = "/notifications";
 }

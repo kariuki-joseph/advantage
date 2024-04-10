@@ -26,6 +26,8 @@ class Ad {
     required this.createdAt,
   });
 
+  GeoPoint get location => GeoPoint(lat, lng);
+
   // hashmap to save to firebase
   Map<String, dynamic> toMap() {
     return {
@@ -35,6 +37,7 @@ class Ad {
       'tags': tags,
       'lat': lat,
       'lng': lng,
+      'location': GeoPoint(lat, lng),
       'discoveryRadius': discoveryRadius,
       'userId': userId,
       'userName': userName,

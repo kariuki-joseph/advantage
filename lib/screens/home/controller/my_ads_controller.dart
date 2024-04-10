@@ -18,7 +18,6 @@ class MyAdsController extends GetxController {
   final myLat = (-0.3981185).obs;
   final myLng = 36.9612208.obs;
 
-  StreamSubscription<Position>? _positionStreamSubscription;
   final LocationSettings locationSettings = const LocationSettings(
     accuracy: LocationAccuracy.high,
     distanceFilter: 2, // notify me when I move 2 meters
@@ -28,15 +27,6 @@ class MyAdsController extends GetxController {
   void onInit() async {
     await fetchMyAds();
 
-    _positionStreamSubscription =
-        Geolocator.getPositionStream(locationSettings: locationSettings).listen(
-      (Position position) {
-        myLat.value = position.latitude;
-        myLng.value = position.longitude;
-
-        recalculateDistances();
-      },
-    );
     super.onInit();
   }
 
