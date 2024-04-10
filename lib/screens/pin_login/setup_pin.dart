@@ -1,5 +1,3 @@
-import 'package:advantage/constants/app_color.dart';
-import 'package:advantage/routes/app_page.dart';
 import 'package:advantage/screens/pin_login/components/pin_button.dart';
 import 'package:advantage/screens/pin_login/components/pin_field.dart';
 import 'package:advantage/screens/pin_login/controller/pin_controller.dart';
@@ -19,7 +17,7 @@ class _SetupPinState extends State<SetupPin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColor.primaryColor,
+      backgroundColor: Get.theme.colorScheme.primary,
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         width: MediaQuery.of(context).size.width,
@@ -37,9 +35,14 @@ class _SetupPinState extends State<SetupPin> {
             const SizedBox(
               height: 10,
             ),
-            const Text(
-              "Setup your PIN",
-              style: TextStyle(fontSize: 16, color: Colors.white),
+            Obx(
+              () => Text(
+                controller.message.value,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: controller.hasError.value ? Colors.red : Colors.white,
+                ),
+              ),
             ),
             const Spacer(),
             Row(
@@ -116,11 +119,7 @@ class _SetupPinState extends State<SetupPin> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                PinButton(
-                    onPressed: () {
-                      Get.toNamed(AppPage.confirmPin);
-                    },
-                    number: ""),
+                PinButton(onPressed: () {}, number: ""),
                 PinButton(
                   onPressed: () {
                     controller.pin.add(0);

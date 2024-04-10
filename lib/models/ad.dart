@@ -4,6 +4,7 @@ class Ad {
   String id;
   String title;
   String description;
+  List<String> tags;
   double lat, lng;
   String userId;
   String userName;
@@ -11,10 +12,12 @@ class Ad {
   double distance = 0.0;
   double discoveryRadius;
   bool isVisible = true;
+
   Ad({
     required this.id,
     required this.title,
     required this.description,
+    this.tags = const [],
     required this.lat,
     required this.lng,
     required this.discoveryRadius,
@@ -23,14 +26,18 @@ class Ad {
     required this.createdAt,
   });
 
+  GeoPoint get location => GeoPoint(lat, lng);
+
   // hashmap to save to firebase
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'title': title,
       'description': description,
+      'tags': tags,
       'lat': lat,
       'lng': lng,
+      'location': GeoPoint(lat, lng),
       'discoveryRadius': discoveryRadius,
       'userId': userId,
       'userName': userName,
@@ -44,6 +51,7 @@ class Ad {
       id: snapshot.id,
       title: snapshot['title'],
       description: snapshot['description'],
+      tags: List<String>.from(snapshot['tags']),
       lat: snapshot['lat'],
       lng: snapshot['lng'],
       discoveryRadius: snapshot['discoveryRadius'],

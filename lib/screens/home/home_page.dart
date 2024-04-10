@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final HomePageController controller = Get.put(HomePageController());
+  final HomePageController controller = Get.find();
   int _currentIndex = 0;
   final _pageController = PageController();
 
@@ -21,13 +21,12 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
         body: Padding(
           padding: const EdgeInsets.all(16),
           child: PageView(
             controller: _pageController,
             children: [
-              HomeTab(),
+              const HomeTab(),
               MyAdsTab(),
               const MessagesTab(),
             ],

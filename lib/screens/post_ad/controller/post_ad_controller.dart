@@ -1,7 +1,7 @@
 import 'package:advantage/models/ad.dart';
 import 'package:advantage/models/user_model.dart';
 import 'package:advantage/screens/auth/controllers/auth_controller.dart';
-import 'package:advantage/screens/home/controller/home_page_controller.dart';
+import 'package:advantage/screens/home/controller/home_tab_controller.dart';
 import 'package:advantage/screens/home/controller/my_ads_controller.dart';
 import 'package:advantage/utils/toast_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,29 +13,32 @@ import 'package:permission_handler/permission_handler.dart';
 
 class PostAdController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final AuthController authController = Get.put(AuthController());
+  final AuthController authController = Get.find<AuthController>();
 
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController discoveryRadiusController =
       TextEditingController();
-  final HomePageController homePageController = Get.find();
+  final TextEditingController tagsController = TextEditingController();
+
+  final HomeTabController homeTabController = Get.find();
   final MyAdsController myAdsController = Get.find();
 
   final isLoading = false.obs;
   final isLocationLoading = false.obs;
   final isLocationSelected = false.obs;
   final locationError = false.obs;
+  final tags = <String>[].obs;
+  final int maxTags = 5;
 
   final lat = 0.0.obs;
   final lng = 0.0.obs;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  late UserModel loggedInUser;
+  late UserModel loggedInUser = Get.find<AuthController>().user.value;
 
   @override
   void onInit() async {
     discoveryRadiusController.text = "5";
-    loggedInUser = await authController.getUserDetailsFromSharedPrefs();
     super.onInit();
   }
 
@@ -80,9 +83,15 @@ class PostAdController extends GetxController {
     if (formKey.currentState!.validate()) {
       String adId = _firestore.collection("ads").doc().id;
       // validate that location is not null
-      if (lat.value == 0.0 || lng.value == 0.0) {
-        locationError.value = true;
-        showErrorToast("Please select location");
+      // if (lat.value == 0.0 || lng.value == 0.0) {
+      //   locationError.value = true;
+      //   showErrorToast("Please select location");
+      //   return;
+      // }
+
+      // validate at least one tag
+      if (tags.isEmpty) {
+        showErrorToast("Please add at least one tag");
         return;
       }
 
@@ -94,10 +103,11 @@ class PostAdController extends GetxController {
         lng: lng.value,
         createdAt: DateTime.now(),
         discoveryRadius: double.parse(discoveryRadiusController.text),
-        userId: loggedInUser.phone == "" ? "123" : loggedInUser.phone,
-        userName:
-            loggedInUser.username == "" ? "Test User" : loggedInUser.username,
+        userId: loggedInUser.phone,
+        userName: loggedInUser.username,
+        tags: tags,
       );
+
       try {
         isLoading.value = true;
 
@@ -107,7 +117,7 @@ class PostAdController extends GetxController {
         _resetForm();
 
         // refresh the ads in home page
-        homePageController.fetchAds();
+        homeTabController.fetchAds();
         myAdsController.fetchMyAds();
       } catch (e) {
         showErrorToast(e.toString());
@@ -121,9 +131,20 @@ class PostAdController extends GetxController {
   void _resetForm() {
     titleController.clear();
     descriptionController.clear();
+    tagsController.clear();
+    discoveryRadiusController.text = "5";
+    tags.clear();
     lat.value = 0.0;
     lng.value = 0.0;
     isLocationSelected.value = false;
     locationError.value = false;
+  }
+
+// add tags to the list
+  void addTag() {
+    if (tagsController.text.isNotEmpty) {
+      tags.add(tagsController.text);
+      tagsController.clear();
+    }
   }
 }

@@ -1,7 +1,6 @@
 import 'package:advantage/models/ad.dart';
-import 'package:advantage/screens/home/controller/home_page_controller.dart';
+import 'package:advantage/screens/home/controller/home_tab_controller.dart';
 import 'package:advantage/screens/home/controller/my_ads_controller.dart';
-import 'package:advantage/screens/home/home_page.dart';
 import 'package:advantage/utils/toast_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 class UpdateAdController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final HomePageController homePageController = Get.put(HomePageController());
+  final HomeTabController homeTabController = Get.put(HomeTabController());
   final MyAdsController myAdsController = Get.put(MyAdsController());
 
   final TextEditingController titleController = TextEditingController();
@@ -76,7 +75,7 @@ class UpdateAdController extends GetxController {
 
   Future<void> updateAd() async {
     if (formKey.currentState!.validate()) {
-      String adId = adToUpdate.value!.id;
+      String adId = adToUpdate.value.id;
       // validate that location is not null
       if (lat.value == 0.0 || lng.value == 0.0) {
         locationError.value = true;
@@ -103,7 +102,7 @@ class UpdateAdController extends GetxController {
 
         isLoading.value = false;
         // load the new ad in home page and my ads
-        homePageController.fetchAds();
+        homeTabController.fetchAds();
         myAdsController.fetchMyAds();
         Fluttertoast.showToast(msg: "Ad updated successfully");
       } catch (e) {
@@ -115,25 +114,15 @@ class UpdateAdController extends GetxController {
     }
   }
 
-  void _resetForm() {
-    titleController.clear();
-    descriptionController.clear();
-    discoveryRadiusController.clear();
-    lat.value = 0.0;
-    lng.value = 0.0;
-    isLocationSelected.value = false;
-    locationError.value = false;
-  }
-
   void setAdToUpdate(Ad ad) {
     adToUpdate.value = ad;
 
-    titleController.text = adToUpdate.value?.title ?? "";
-    descriptionController.text = adToUpdate.value?.description ?? "";
+    titleController.text = adToUpdate.value.title;
+    descriptionController.text = adToUpdate.value.description;
     discoveryRadiusController.text =
-        adToUpdate.value?.discoveryRadius.toString() ?? "";
-    lat.value = adToUpdate.value?.lat ?? 0.0;
-    lng.value = adToUpdate.value?.lng ?? 0.0;
+        adToUpdate.value.discoveryRadius.toString();
+    lat.value = adToUpdate.value.lat;
+    lng.value = adToUpdate.value.lng;
     isLocationSelected.value = true;
   }
 }

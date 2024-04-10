@@ -13,13 +13,6 @@ class PrimaryButton extends StatelessWidget {
       height: 50,
       margin: const EdgeInsets.symmetric(horizontal: 10.0),
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ),
         onPressed: onPressed,
         child: child ?? const Text(""),
       ),

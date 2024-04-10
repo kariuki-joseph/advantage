@@ -1,16 +1,26 @@
-import 'package:advantage/constants/app_color.dart';
 import 'package:advantage/models/ad.dart';
-import 'package:advantage/screens/home/controller/home_page_controller.dart';
+import 'package:advantage/routes/app_routes.dart';
+import 'package:advantage/screens/home/controller/home_tab_controller.dart';
+import 'package:advantage/screens/home/controller/location_controller.dart';
+import 'package:advantage/widgets/ad_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
-class HomeTab extends StatelessWidget {
-  final HomePageController controller = Get.put(HomePageController());
-
-  HomeTab({
+class HomeTab extends StatefulWidget {
+  const HomeTab({
     super.key,
   });
+
+  @override
+  State<HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<HomeTab> {
+  final HomeTabController homeTabController = Get.find<HomeTabController>();
+
+  final LocationController locationController = Get.find<LocationController>();
+
+  final FocusNode searchFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -18,154 +28,119 @@ class HomeTab extends StatelessWidget {
       children: [
         // Header
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // search
             Expanded(
-              child: TextFormField(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: AppColor.searchBarBackground,
-                  hintText: "Search",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(28),
-                      borderSide: BorderSide.none),
-                  prefixIcon: GestureDetector(
-                    onTap: () {
-                      // do nothing
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.fromLTRB(10, 0, 1, 0),
-                      // user icon
-                      child: Icon(Icons.account_circle),
+              child: SearchBar(
+                controller: homeTabController.searchController,
+                focusNode: searchFocusNode,
+                leading: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.account_circle, size: 40),
+                ),
+                trailing: searchFocusNode.hasFocus
+                    ? [
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.check, size: 32),
+                        ),
+                      ]
+                    : null,
+                onSubmitted: (String value) {
+                  // add subscription to firebase
+                  homeTabController.addSubscription(value);
+                  // scroll to the end of the list
+                  homeTabController.scrollController.animateTo(
+                    homeTabController.scrollController.position.maxScrollExtent,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.ease,
+                  );
+                },
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                Get.toNamed(AppRoutes.notifications);
+              },
+              icon: const Icon(
+                Icons.notifications_outlined,
+                size: 32,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        // cancellable selection chips
+        Obx(
+          () => SizedBox(
+            height: 50,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              controller: homeTabController.scrollController,
+              children: homeTabController.subscriptions
+                  .map(
+                    (subscription) => Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: InputChip(
+                        label: Text(subscription.keyword),
+                        onDeleted: () {
+                          homeTabController.deleteSubscription(subscription);
+                        },
+                      ),
                     ),
+                  )
+                  .toList(),
+            ),
+          ),
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Obx(
+                () => RangeSlider(
+                  values: homeTabController.rangeValues.value,
+                  onChanged: (RangeValues values) {
+                    homeTabController.rangeValues.value = values;
+                  },
+                  min: 0,
+                  max: 100,
+                  divisions: 100,
+                  labels: RangeLabels(
+                    homeTabController.rangeValues.value.start
+                        .round()
+                        .toString(),
+                    homeTabController.rangeValues.value.end.round().toString(),
                   ),
-                  suffixIcon: null,
                 ),
               ),
             ),
-            const SizedBox(width: 10),
-            InkWell(
-              onTap: () {
-                controller.fetchAds();
-                controller.updateLiveLocation();
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: Image.asset("images/refresh.png", width: 40, height: 40),
-              ),
-            )
           ],
         ),
+        const Center(child: Text("Adjust Search Radius")),
         const SizedBox(height: 10),
         // Body
         Expanded(
           child: Obx(
             () {
-              if (controller.ads.isEmpty && controller.isLoading.value) {
+              if (homeTabController.ads.isEmpty &&
+                  homeTabController.isLoading.value) {
                 return const Center(child: CircularProgressIndicator());
               } else {
-                return GetBuilder<HomePageController>(
-                  init: controller,
+                return GetBuilder<HomeTabController>(
+                  init: homeTabController,
                   builder: (_) {
                     return Obx(
-                      () => ListView.builder(
-                        itemCount: controller.ads.length,
-                        itemBuilder: (context, index) {
-                          Ad ad = controller.ads[index];
-
-                          return Card(
-                            color: ad.isVisible
-                                ? Colors.white
-                                : Colors.transparent,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              side: const BorderSide(
-                                color: Colors.black,
-                                width: 1.0,
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(10, 0, 10, 16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  ListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    leading: const Icon(
-                                        Icons.account_circle_outlined),
-                                    title: Text(
-                                      ad.userName,
-                                      style: const TextStyle(fontSize: 12),
-                                    ),
-                                    subtitle: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.access_time,
-                                          size: 16,
-                                          color: AppColor.primaryColor,
-                                        ),
-                                        const SizedBox(width: 5),
-                                        Text(
-                                          timeago.format(ad.createdAt),
-                                          style: const TextStyle(fontSize: 11),
-                                        ),
-                                        const SizedBox(
-                                          width: 20,
-                                        ),
-                                        const Icon(
-                                          Icons.directions_run,
-                                          size: 16,
-                                          color: AppColor.primaryColor,
-                                        ),
-                                        Text(
-                                          "${ad.distance.toStringAsFixed(2)}m",
-                                          style: const TextStyle(fontSize: 11),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  Text(
-                                    ad.title,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    ad.description,
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  // text and call icons
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      OutlinedButton.icon(
-                                        onPressed: () {},
-                                        icon: const Icon(
-                                            Icons.chat_bubble_outline),
-                                        label: const Text("Chat"),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      OutlinedButton.icon(
-                                        onPressed: () {},
-                                        icon: const Icon(Icons.call),
-                                        label: const Text("Call"),
-                                        style: OutlinedButton.styleFrom(
-                                          backgroundColor:
-                                              AppColor.primaryColor,
-                                          foregroundColor: Colors.white,
-                                        ),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
+                      () => RefreshIndicator(
+                        onRefresh: () async {
+                          await homeTabController.fetchAds();
+                          locationController.updateLiveLocation();
                         },
+                        child: ListView.builder(
+                          itemCount: homeTabController.ads.length,
+                          itemBuilder: (context, index) {
+                            Ad ad = homeTabController.ads[index];
+                            return AdWidget(ad: ad);
+                          },
+                        ),
                       ),
                     );
                   },
@@ -173,7 +148,7 @@ class HomeTab extends StatelessWidget {
               }
             },
           ),
-        )
+        ),
       ],
     );
   }
