@@ -14,7 +14,7 @@ import 'package:get/get.dart';
 class HomeTabController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  final Rx<RangeValues> rangeValues = Rx<RangeValues>(const RangeValues(1, 50));
+  final Rx<RangeValues> rangeValues = Rx<RangeValues>(const RangeValues(1, 30));
   final ScrollController scrollController = ScrollController();
   final UserModel loggedInUser = Get.find<AuthController>().user.value;
   final LocationController locationController = Get.find<LocationController>();
@@ -32,7 +32,10 @@ class HomeTabController extends GetxController {
     super.onInit();
 
     // listen to changes in user location and recalculate distances
-    ever(locationController.userLocation, recalculateDistance);
+    ever(locationController.userLocation, (_) => getAdsWithRadius());
+    // listen to changes in the search radius of the user and get ads within the radius
+    ever(locationController.searchRadius, (_) => getAdsWithRadius());
+
     await locationController.initConfig();
     // get user's subscriptions
     await fetchSubscriptions();
@@ -71,7 +74,7 @@ class HomeTabController extends GetxController {
     }
   }
 
-  recalculateDistance(_) {
+  void refreshDistance() {
     // recalculate distances once the location changes
     // update visibility of ads based on the geofence radius
     for (var ad in ads) {
@@ -90,7 +93,7 @@ class HomeTabController extends GetxController {
     try {
       QuerySnapshot snapshot = await _firestore.collection("ads").get();
       ads.value = Ad.fromQuerySnapshot(snapshot);
-      recalculateDistance("_");
+      refreshDistance();
     } catch (e) {
       showErrorToast(e.toString());
     } finally {
@@ -100,9 +103,6 @@ class HomeTabController extends GetxController {
 
   // get ads when users's geofence radius changes
   Future<void> getAdsWithRadius() async {
-    double radiusInMeters = rangeValues.value.end - rangeValues.value.start + 1;
-    double radiusInKilometers = radiusInMeters / 1000; // convert to km
-    debugPrint("Radius in km: $radiusInKilometers");
     // create a geofence collection reference
     GeoFireCollectionRef collectionRef =
         GeoFireCollectionRef(_firestore.collection("ads"));
@@ -116,7 +116,7 @@ class HomeTabController extends GetxController {
 
     Stream<List<DocumentSnapshot>> stream = collectionRef.within(
       center: centerGeoPoint,
-      radius: radiusInKilometers,
+      radius: locationController.searchRadius.value / 1000, // convert to km
       field: "location",
       strictMode: true,
     );
@@ -126,7 +126,7 @@ class HomeTabController extends GetxController {
       debugPrint(" Got ads within radius: ${documentList.length}");
       // update the ads with the new list
       ads.value = documentList.map((doc) => Ad.fromDocument(doc)).toList();
-      recalculateDistance("_");
+      refreshDistance();
     });
 
     subscription.onDone(() {
