@@ -92,34 +92,60 @@ class _HomeTabState extends State<HomeTab> {
             ),
           ),
         ),
-        const Center(child: Text("Search Radius")),
+        const SizedBox(height: 5),
+        Center(
+          child: Obx(
+            () => RichText(
+              text: TextSpan(
+                children: [
+                  const TextSpan(text: 'Search Radius: '),
+                  TextSpan(
+                    text:
+                        '${homeTabController.rangeValues.value.end.round()} m',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Get.theme.colorScheme.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
         Row(
           children: [
             Expanded(
               child: Obx(
-                () => RangeSlider(
-                  values: homeTabController.rangeValues.value,
-                  onChangeEnd: (RangeValues values) {
-                    // update the search radius
-                    locationController.searchRadius.value =
-                        values.end - values.start + 1;
-                  },
-                  onChanged: (RangeValues values) {
-                    final newValues = RangeValues(
-                      homeTabController.rangeValues.value
-                          .start, // Keep the start value constant
-                      values.end, // Only update the end value
-                    );
-                    homeTabController.rangeValues.value = newValues;
-                  },
-                  min: 0,
-                  max: 1000,
-                  divisions: 200,
-                  labels: RangeLabels(
-                    homeTabController.rangeValues.value.start
-                        .round()
-                        .toString(),
-                    homeTabController.rangeValues.value.end.round().toString(),
+                () => SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    showValueIndicator: ShowValueIndicator.always,
+                  ),
+                  child: RangeSlider(
+                    values: homeTabController.rangeValues.value,
+                    onChangeEnd: (RangeValues values) {
+                      // update the search radius
+                      locationController.searchRadius.value =
+                          values.end - values.start + 1;
+                    },
+                    onChanged: (RangeValues values) {
+                      final newValues = RangeValues(
+                        homeTabController.rangeValues.value
+                            .start, // Keep the start value constant
+                        values.end, // Only update the end value
+                      );
+                      homeTabController.rangeValues.value = newValues;
+                    },
+                    min: 0,
+                    max: 1000,
+                    divisions: 200,
+                    labels: RangeLabels(
+                      homeTabController.rangeValues.value.start
+                          .round()
+                          .toString(),
+                      homeTabController.rangeValues.value.end
+                          .round()
+                          .toString(),
+                    ),
                   ),
                 ),
               ),
@@ -143,7 +169,7 @@ class _HomeTabState extends State<HomeTab> {
                     return Obx(
                       () => RefreshIndicator(
                         onRefresh: () async {
-                          await homeTabController.fetchAds();
+                          await homeTabController.getAdsWithRadius();
                           locationController.getAndUpdateUserLocation();
                         },
                         child: ListView.builder(

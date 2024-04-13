@@ -80,7 +80,8 @@ class HomeTabController extends GetxController {
     for (var ad in ads) {
       double distance = locationController.getDistance(ad.lat, ad.lng);
       ad.distance = distance;
-      ad.isVisible = distance <= ad.discoveryRadius;
+      ad.isVisible = distance <=
+          ad.discoveryRadius + locationController.searchRadius.value;
     }
 
     // sort in ascending order of distance
@@ -103,6 +104,7 @@ class HomeTabController extends GetxController {
 
   // get ads when users's geofence radius changes
   Future<void> getAdsWithRadius() async {
+    isLoading.value = true;
     // create a geofence collection reference
     GeoFireCollectionRef collectionRef =
         GeoFireCollectionRef(_firestore.collection("ads"));
@@ -123,6 +125,7 @@ class HomeTabController extends GetxController {
 
     StreamSubscription subscription =
         stream.listen((List<DocumentSnapshot> documentList) {
+      isLoading.value = false;
       debugPrint(" Got ads within radius: ${documentList.length}");
       // update the ads with the new list
       ads.value = documentList.map((doc) => Ad.fromDocument(doc)).toList();

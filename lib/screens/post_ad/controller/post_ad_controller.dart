@@ -38,7 +38,7 @@ class PostAdController extends GetxController {
 
   @override
   void onInit() async {
-    discoveryRadiusController.text = "5";
+    discoveryRadiusController.text = "20";
     super.onInit();
   }
 
@@ -52,7 +52,6 @@ class PostAdController extends GetxController {
 
   Future<void> getLocation() async {
     isLocationLoading.value = true;
-    Fluttertoast.showToast(msg: "Geting location...");
     try {
       await locationController.getAndUpdateUserLocation();
     } on Exception catch (e) {
@@ -121,7 +120,7 @@ class PostAdController extends GetxController {
     titleController.clear();
     descriptionController.clear();
     tagsController.clear();
-    discoveryRadiusController.text = "5";
+    discoveryRadiusController.text = "20";
     tags.clear();
     isLocationSelected.value = false;
     locationError.value = false;

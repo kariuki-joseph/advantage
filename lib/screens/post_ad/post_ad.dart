@@ -148,7 +148,11 @@ class PostAd extends StatelessWidget {
                       label: Text(
                         controller.isLocationSelected.value
                             ? "Location Added"
-                            : "Add location",
+                            : controller.isLocationLoading.value
+                                ? "Getting location..."
+                                : controller.locationError.value
+                                    ? "Error getting location"
+                                    : "Add location",
                       ),
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 50),
@@ -161,13 +165,11 @@ class PostAd extends StatelessWidget {
                       ),
                       icon: controller.isLocationLoading.value
                           ? const MyBtnLoader()
-                          : controller.isLocationSelected.value
-                              ? const Icon(
-                                  Icons.check_circle_outline,
-                                )
-                              : const Icon(
-                                  Icons.add_location_alt_outlined,
-                                ),
+                          : Icon(
+                              controller.isLocationSelected.value
+                                  ? Icons.check_circle_outline
+                                  : Icons.add_location_alt_outlined,
+                            ),
                       onPressed: () {
                         controller.getLocation();
                       },

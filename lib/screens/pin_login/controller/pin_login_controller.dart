@@ -6,6 +6,7 @@ import 'package:advantage/screens/auth/controllers/auth_controller.dart';
 import 'package:advantage/utils/toast_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -59,10 +60,6 @@ class PinLoginController extends GetxController {
       return;
     }
 
-    if (isPinWrong.value) {
-      isPinWrong.value = false;
-    }
-
     if (savedPin != loginPin.join('')) {
       await Future.delayed(const Duration(milliseconds: 100));
       isPinWrong.value = true;
@@ -73,9 +70,13 @@ class PinLoginController extends GetxController {
     }
 
     // else pin is correct. Proceed to Home
-    isPinWrong.value = false;
     isLoginSuccess.value = true;
+    isPinWrong.value = false;
+
+    // prevent animation inputs from being detected as pin inputs
+    isLoading.value = true;
     loginPin.addAll([1, 2, 3, 4]); // for animation purpose
+    isLoading.value = false;
     await Future.delayed(const Duration(milliseconds: 200), () {});
     loginPin.clear();
 
@@ -84,6 +85,7 @@ class PinLoginController extends GetxController {
 
   // login from online
   void onlineLogin(_) async {
+    debugPrint("Using online login");
     // don't listen when loading state is active
     if (isLoading.value || loginPin.length < 4) {
       return;
@@ -129,6 +131,7 @@ class PinLoginController extends GetxController {
         return;
       }
 
+      isPinWrong.value = false;
       // pin correct
       isLoginSuccess.value = true;
       _timer?.cancel();
@@ -155,6 +158,11 @@ class PinLoginController extends GetxController {
 
   @override
   void onClose() {
+    // reset the status
+    isPinWrong.value = false;
+    isLoginSuccess.value = false;
+    isLoading.value = false;
+
     _timer?.cancel();
     super.onClose();
   }
