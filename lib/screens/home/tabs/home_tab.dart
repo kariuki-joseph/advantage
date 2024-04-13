@@ -100,7 +100,9 @@ class _HomeTabState extends State<HomeTab> {
                 () => RangeSlider(
                   values: homeTabController.rangeValues.value,
                   onChangeEnd: (RangeValues values) {
-                    homeTabController.getAdsWithRadius();
+                    // update the search radius
+                    locationController.searchRadius.value =
+                        values.end - values.start + 1;
                   },
                   onChanged: (RangeValues values) {
                     final newValues = RangeValues(
@@ -111,8 +113,8 @@ class _HomeTabState extends State<HomeTab> {
                     homeTabController.rangeValues.value = newValues;
                   },
                   min: 0,
-                  max: 100,
-                  divisions: 100,
+                  max: 1000,
+                  divisions: 200,
                   labels: RangeLabels(
                     homeTabController.rangeValues.value.start
                         .round()
