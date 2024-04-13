@@ -11,4 +11,5 @@ class AppRoutes {
   static const String updateAd = "/update-ad";
   static const String phoneLogin = '/login';
   static const String notifications = "/notifications";
+  static const String setLocation = "/set-location";
 }

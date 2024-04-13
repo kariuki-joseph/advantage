@@ -1,4 +1,5 @@
 import 'package:advantage/constants/app_color.dart';
+import 'package:advantage/screens/home/controller/location_controller.dart';
 import 'package:advantage/screens/post_ad/controller/post_ad_controller.dart';
 import 'package:advantage/widgets/my_btn_loader.dart';
 import 'package:flutter/material.dart';
@@ -152,8 +153,8 @@ class PostAd extends StatelessWidget {
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 50),
                         foregroundColor: controller.locationError.value
-                            ? Colors.red
-                            : AppColor.primaryColor,
+                            ? Get.theme.colorScheme.error
+                            : Get.theme.colorScheme.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -174,16 +175,18 @@ class PostAd extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Obx(
-                    () => Text(
-                        "Location: ${controller.lat.value}, ${controller.lng.value}"),
+                    () => Center(
+                      child: Text(
+                          "Location: ${controller.locationController.userLocation.value.latitude}, ${controller.locationController.userLocation.value.longitude}"),
+                    ),
                   ),
                   const SizedBox(height: 16),
                   Obx(
                     () => ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 50),
-                        backgroundColor: AppColor.primaryColor,
-                        foregroundColor: Colors.white,
+                        backgroundColor: Get.theme.colorScheme.primary,
+                        foregroundColor: Get.theme.colorScheme.onPrimary,
                       ),
                       onPressed: () {
                         controller.postAd();

@@ -1,8 +1,12 @@
 import 'package:advantage/bindings/home_page_binding.dart';
 import 'package:advantage/bindings/notifications_binding.dart';
 import 'package:advantage/bindings/post_ad_binding.dart';
+import 'package:advantage/bindings/set_location_binding.dart';
+import 'package:advantage/bindings/update_ad_binding.dart';
 import 'package:advantage/middlewares/auth_middleware.dart';
+import 'package:advantage/middlewares/get_user_location.dart';
 import 'package:advantage/routes/app_routes.dart';
+import 'package:advantage/screens/errors/set_location.dart';
 import 'package:advantage/screens/finish_profile/finish_profile.dart';
 import 'package:advantage/screens/home/home_page.dart';
 import 'package:advantage/screens/notifications/notifications_page.dart';
@@ -44,6 +48,7 @@ class AppPage {
     GetPage(
       name: AppRoutes.pinLogin,
       page: () => const PinLogin(),
+      middlewares: [GetUserLocation()],
     ),
     GetPage(
       name: AppRoutes.finishProfile,
@@ -53,7 +58,10 @@ class AppPage {
       name: AppRoutes.home,
       page: () => const HomePage(),
       binding: HomePageBinding(),
-      middlewares: [AuthMiddleware()],
+      middlewares: [
+        GetUserLocation(),
+        AuthMiddleware(),
+      ],
     ),
     GetPage(
       name: AppRoutes.phoneLogin,
@@ -71,6 +79,7 @@ class AppPage {
     GetPage(
       name: AppRoutes.updateAd,
       page: () => UpdateAd(),
+      binding: UpdateAdBinding(),
       transition: Transition.zoom,
       transitionDuration: const Duration(milliseconds: 600),
     ),
@@ -78,6 +87,11 @@ class AppPage {
       name: AppRoutes.notifications,
       binding: NotificationsBinding(),
       page: () => NotificationsPage(),
-    )
+    ),
+    GetPage(
+      name: AppRoutes.setLocation,
+      page: () => SetLocation(),
+      binding: SetLocationBinding(),
+    ),
   ];
 }

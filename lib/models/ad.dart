@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geoflutterfire2/geoflutterfire2.dart';
 
 class Ad {
   String id;
@@ -26,7 +27,9 @@ class Ad {
     required this.createdAt,
   });
 
-  GeoPoint get location => GeoPoint(lat, lng);
+  GeoPoint get location {
+    return GeoPoint(lat, lng);
+  }
 
   // hashmap to save to firebase
   Map<String, dynamic> toMap() {
@@ -37,11 +40,11 @@ class Ad {
       'tags': tags,
       'lat': lat,
       'lng': lng,
-      'location': GeoPoint(lat, lng),
+      'location': GeoFirePoint(location.latitude, location.longitude).data,
       'discoveryRadius': discoveryRadius,
       'userId': userId,
       'userName': userName,
-      'postDate': createdAt,
+      'createdAt': createdAt,
     };
   }
 
@@ -57,7 +60,7 @@ class Ad {
       discoveryRadius: snapshot['discoveryRadius'],
       userId: snapshot['userId'],
       userName: snapshot['userName'],
-      createdAt: (snapshot['postDate'] as Timestamp).toDate(),
+      createdAt: (snapshot['createdAt'] as Timestamp).toDate(),
     );
   }
 

@@ -72,7 +72,7 @@ class _HomeTabState extends State<HomeTab> {
         // cancellable selection chips
         Obx(
           () => SizedBox(
-            height: 50,
+            height: homeTabController.subscriptions.isEmpty ? 0 : 50,
             child: ListView(
               scrollDirection: Axis.horizontal,
               controller: homeTabController.scrollController,
@@ -92,14 +92,23 @@ class _HomeTabState extends State<HomeTab> {
             ),
           ),
         ),
+        const Center(child: Text("Search Radius")),
         Row(
           children: [
             Expanded(
               child: Obx(
                 () => RangeSlider(
                   values: homeTabController.rangeValues.value,
+                  onChangeEnd: (RangeValues values) {
+                    homeTabController.getAdsWithRadius();
+                  },
                   onChanged: (RangeValues values) {
-                    homeTabController.rangeValues.value = values;
+                    final newValues = RangeValues(
+                      homeTabController.rangeValues.value
+                          .start, // Keep the start value constant
+                      values.end, // Only update the end value
+                    );
+                    homeTabController.rangeValues.value = newValues;
                   },
                   min: 0,
                   max: 100,
@@ -115,13 +124,14 @@ class _HomeTabState extends State<HomeTab> {
             ),
           ],
         ),
-        const Center(child: Text("Adjust Search Radius")),
+
         const SizedBox(height: 10),
         // Body
         Expanded(
           child: Obx(
             () {
               if (homeTabController.ads.isEmpty &&
+                      homeTabController.isLoading.value ||
                   homeTabController.isLoading.value) {
                 return const Center(child: CircularProgressIndicator());
               } else {
@@ -132,7 +142,7 @@ class _HomeTabState extends State<HomeTab> {
                       () => RefreshIndicator(
                         onRefresh: () async {
                           await homeTabController.fetchAds();
-                          locationController.updateLiveLocation();
+                          locationController.getAndUpdateUserLocation();
                         },
                         child: ListView.builder(
                           itemCount: homeTabController.ads.length,

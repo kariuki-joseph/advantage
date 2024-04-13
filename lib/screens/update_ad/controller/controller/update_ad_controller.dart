@@ -116,7 +116,6 @@ class UpdateAdController extends GetxController {
 
   void setAdToUpdate(Ad ad) {
     adToUpdate.value = ad;
-
     titleController.text = adToUpdate.value.title;
     descriptionController.text = adToUpdate.value.description;
     discoveryRadiusController.text =

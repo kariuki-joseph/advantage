@@ -14,7 +14,7 @@ class PhoneLogin extends StatefulWidget {
 }
 
 class _PhoneLoginState extends State<PhoneLogin> {
-  final AuthController authController = Get.put(AuthController());
+  final AuthController authController = Get.find<AuthController>();
   final List<String> _countryCodes = ["+254", "+1", "+44", "+91"];
 
   @override

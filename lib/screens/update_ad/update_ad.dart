@@ -1,4 +1,5 @@
 import 'package:advantage/constants/app_color.dart';
+import 'package:advantage/screens/home/controller/location_controller.dart';
 import 'package:advantage/screens/update_ad/controller/controller/update_ad_controller.dart';
 import 'package:advantage/widgets/my_btn_loader.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ class UpdateAd extends StatelessWidget {
   UpdateAd({super.key});
 
   final UpdateAdController controller = Get.find();
+  final LocationController locationController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -95,8 +97,8 @@ class UpdateAd extends StatelessWidget {
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 50),
                         foregroundColor: controller.locationError.value
-                            ? Colors.red
-                            : AppColor.primaryColor,
+                            ? Get.theme.colorScheme.error
+                            : Get.theme.colorScheme.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -123,8 +125,8 @@ class UpdateAd extends StatelessWidget {
                     () => ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 50),
-                        backgroundColor: AppColor.primaryColor,
-                        foregroundColor: Colors.white,
+                        backgroundColor: Get.theme.colorScheme.primary,
+                        foregroundColor: Get.theme.colorScheme.onPrimary,
                       ),
                       onPressed: () {
                         controller.updateAd();
