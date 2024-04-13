@@ -12,14 +12,14 @@ class LocationController extends GetxController {
   StreamSubscription<Position>? _positionStreamSubscription;
   final LocationSettings locationSettings = const LocationSettings(
     accuracy: LocationAccuracy.high,
-    distanceFilter: 2, // notify me when I move 2 meters
+    distanceFilter: 1, // notify me when I move 2 meters
   );
-
   GeoPoint userGeoPoint = const GeoPoint(0, 0);
+  // search radius of the user in km (default is 30m)
+  final RxDouble searchRadius = 30.0.obs;
 
-  @override
-  void onInit() async {
-    super.onInit();
+  Future<void> initConfig() async {
+    // listen to user location changes
     _positionStreamSubscription =
         Geolocator.getPositionStream(locationSettings: locationSettings).listen(
       (Position position) {
@@ -33,6 +33,17 @@ class LocationController extends GetxController {
             GeoPoint(userLocation.value.latitude, userLocation.value.longitude);
       },
     );
+
+    // request location permission
+    if (await Permission.location.request().isGranted) {
+      // get current location
+      Position position = await _determinePosition();
+      userLocation.value.latitude = position.latitude;
+      userLocation.value.longitude = position.longitude;
+    } else {
+      // request permission
+      Permission.location.request();
+    }
   }
 
   void setUserLocation(double lat, double lng) {
@@ -83,19 +94,6 @@ class LocationController extends GetxController {
 
     // at this point we know that we have permission. Request location for the user
     return await Geolocator.getCurrentPosition();
-  }
-
-  Future<void> initConfig() async {
-    // request location permission
-    if (await Permission.location.request().isGranted) {
-      // get current location
-      Position position = await _determinePosition();
-      userLocation.value.latitude = position.latitude;
-      userLocation.value.longitude = position.longitude;
-    } else {
-      // request permission
-      Permission.location.request();
-    }
   }
 
   // geting the distance between two points
