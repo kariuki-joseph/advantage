@@ -23,21 +23,23 @@ class NotificationsPage extends StatelessWidget {
                   ? const Center(
                       child: Text('You have no new notifications.'),
                     )
-                  : Column(
-                      children: List.generate(
-                          notificationController.notifications.length, (index) {
-                        final notification =
-                            notificationController.notifications[index];
-                        return Obx(
-                          () => NotificationItemWidget(
-                            notification: notification,
-                            isRead: notification.isRead,
+                  : Obx(
+                      () => Column(
+                        children: List.generate(
+                            notificationController.notifications.length,
+                            (index) {
+                          return NotificationItemWidget(
+                            notification:
+                                notificationController.notifications[index],
+                            isRead: notificationController
+                                .notifications[index].isRead,
                             onTap: () {
-                              notificationController.markAsRead(notification);
+                              notificationController.markAsRead(
+                                  notificationController.notifications[index]);
                             },
-                          ),
-                        );
-                      }).toList(),
+                          );
+                        }).toList(),
+                      ),
                     ),
         ),
       ),

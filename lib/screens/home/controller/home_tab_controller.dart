@@ -5,6 +5,7 @@ import 'package:advantage/models/ad.dart';
 import 'package:advantage/models/notification_model.dart';
 import 'package:advantage/models/subscription.dart';
 import 'package:advantage/models/user_model.dart';
+import 'package:advantage/routes/app_routes.dart';
 import 'package:advantage/screens/auth/controllers/auth_controller.dart';
 import 'package:advantage/screens/home/controller/location_controller.dart';
 import 'package:advantage/screens/notifications/controllers/notifications_controller.dart';
@@ -13,6 +14,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeTabController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -197,5 +199,20 @@ class HomeTabController extends GetxController {
     );
 
     notificationController.createNotification(notification);
+  }
+
+// start in-app chat with advertiser
+  void startChat(String receiverId) {
+    Get.toNamed(AppRoutes.chat, arguments: receiverId);
+  }
+
+  void callUser(String phoneNumber) async {
+    // launch phone call intent on mobile devices
+    final url = 'tel:$phoneNumber';
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      showErrorToast('Could not launch phone call');
+    }
   }
 }

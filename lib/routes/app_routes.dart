@@ -12,4 +12,6 @@ class AppRoutes {
   static const String phoneLogin = '/login';
   static const String notifications = "/notifications";
   static const String setLocation = "/set-location";
+  static const String chat = "/chat";
+  static const String profile = "/profile";
 }

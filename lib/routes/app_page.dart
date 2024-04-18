@@ -1,3 +1,4 @@
+import 'package:advantage/bindings/chat_binding.dart';
 import 'package:advantage/bindings/home_page_binding.dart';
 import 'package:advantage/bindings/notifications_binding.dart';
 import 'package:advantage/bindings/post_ad_binding.dart';
@@ -6,6 +7,7 @@ import 'package:advantage/bindings/update_ad_binding.dart';
 import 'package:advantage/middlewares/auth_middleware.dart';
 import 'package:advantage/middlewares/get_user_location.dart';
 import 'package:advantage/routes/app_routes.dart';
+import 'package:advantage/screens/chat/chat_facebook_screen.dart';
 import 'package:advantage/screens/errors/set_location.dart';
 import 'package:advantage/screens/finish_profile/finish_profile.dart';
 import 'package:advantage/screens/home/home_page.dart';
@@ -15,6 +17,7 @@ import 'package:advantage/screens/pin_login/phone_login.dart';
 import 'package:advantage/screens/pin_login/setup_pin.dart';
 import 'package:advantage/screens/pin_login/pin_login.dart';
 import 'package:advantage/screens/post_ad/post_ad.dart';
+import 'package:advantage/screens/profile/profile_page.dart';
 import 'package:advantage/screens/register.dart';
 import 'package:advantage/screens/splash_screen.dart';
 import 'package:advantage/screens/update_ad/update_ad.dart';
@@ -92,6 +95,15 @@ class AppPage {
       name: AppRoutes.setLocation,
       page: () => SetLocation(),
       binding: SetLocationBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.chat,
+      page: () => ChatFacebookScreen(),
+      binding: ChatBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.profile,
+      page: () => const ProfilePage(),
     ),
   ];
 }

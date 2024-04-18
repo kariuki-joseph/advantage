@@ -1,9 +1,12 @@
+import 'package:advantage/routes/app_routes.dart';
+import 'package:advantage/screens/home/controller/messages_controller.dart';
 import 'package:advantage/widgets/message_item.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class MessagesTab extends StatelessWidget {
-  const MessagesTab({super.key});
-
+  MessagesTab({super.key});
+  final MessagesController messagesController = Get.find<MessagesController>();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -12,11 +15,25 @@ class MessagesTab extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: const Text("Messages"),
       ),
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: ((context, index) {
-          return const MessageItem();
-        }),
+      body: Obx(
+        () => ListView.builder(
+          itemCount: messagesController.messagePreviews.length,
+          itemBuilder: ((context, index) {
+            return PreviewMessageWidget(
+              messagePreview:
+                  messagesController.messagePreviews.elementAt(index),
+              onTap: () {
+                // navigate to chat screen
+                Get.toNamed(
+                  AppRoutes.chat,
+                  arguments: messagesController.messagePreviews
+                      .elementAt(index)
+                      .senderId,
+                );
+              },
+            );
+          }),
+        ),
       ),
     ));
   }

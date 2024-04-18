@@ -75,15 +75,18 @@ class NotificationController extends GetxController {
   Future<void> markAsRead(NotificationModel notification) async {
     isLoading.value = true;
     try {
-      await _firestore
+      _firestore
           .collection("notifications")
           .doc(notification.id)
           .update({"isRead": true});
 
       // update notiication as read in all notiications list
-      notifications
-          .firstWhere((element) => element.id == notification.id)
-          .isRead = true;
+      int index =
+          notifications.indexWhere((element) => element.id == notification.id);
+      if (index != -1) {
+        notifications[index].isRead = true;
+        notifications.refresh();
+      }
     } catch (e) {
       Get.snackbar("Error", "Failed to mark notification as read");
     } finally {

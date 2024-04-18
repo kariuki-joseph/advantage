@@ -5,7 +5,6 @@ import 'package:advantage/screens/home/controller/location_controller.dart';
 import 'package:advantage/screens/notifications/controllers/notifications_controller.dart';
 import 'package:advantage/widgets/ad_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class HomeTab extends StatefulWidget {
@@ -38,7 +37,9 @@ class _HomeTabState extends State<HomeTab> {
                 controller: homeTabController.searchController,
                 focusNode: searchFocusNode,
                 leading: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.toNamed(AppRoutes.profile);
+                  },
                   icon: const Icon(Icons.account_circle, size: 40),
                 ),
                 trailing: searchFocusNode.hasFocus
@@ -217,7 +218,15 @@ class _HomeTabState extends State<HomeTab> {
                           itemBuilder: (context, index) {
                             Ad ad = homeTabController.ads[index];
                             if (!ad.isVisible) return const SizedBox.shrink();
-                            return AdWidget(ad: ad);
+                            return AdWidget(
+                              ad: ad,
+                              onCall: () {
+                                homeTabController.callUser(ad.phoneNumber);
+                              },
+                              onChat: () {
+                                homeTabController.startChat(ad.userId);
+                              },
+                            );
                           },
                         ),
                       ),

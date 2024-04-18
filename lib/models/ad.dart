@@ -9,6 +9,7 @@ class Ad {
   double lat, lng;
   String userId;
   String userName;
+  String phoneNumber = '';
   DateTime createdAt;
   double distance = 0.0;
   double discoveryRadius;
@@ -19,6 +20,7 @@ class Ad {
     required this.title,
     required this.description,
     this.tags = const [],
+    this.phoneNumber = '',
     required this.lat,
     required this.lng,
     required this.discoveryRadius,
@@ -44,6 +46,7 @@ class Ad {
       'discoveryRadius': discoveryRadius,
       'userId': userId,
       'userName': userName,
+      'phoneNumber': phoneNumber,
       'createdAt': createdAt,
     };
   }
@@ -60,6 +63,7 @@ class Ad {
       discoveryRadius: snapshot['discoveryRadius'],
       userId: snapshot['userId'],
       userName: snapshot['userName'],
+      phoneNumber: snapshot['phoneNumber'],
       createdAt: (snapshot['createdAt'] as Timestamp).toDate(),
     );
   }

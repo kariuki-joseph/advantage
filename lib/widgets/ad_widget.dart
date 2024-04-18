@@ -6,7 +6,14 @@ import 'package:timeago/timeago.dart' as timeago;
 
 class AdWidget extends StatelessWidget {
   final Ad ad;
-  const AdWidget({super.key, required this.ad});
+  final Function() onChat;
+  final Function() onCall;
+  const AdWidget({
+    super.key,
+    required this.ad,
+    required this.onChat,
+    required this.onCall,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -74,11 +81,31 @@ class AdWidget extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            Text(
-              "Tags: ${ad.tags.isNotEmpty ? '#' : ''}${ad.tags.join("# ")}",
-              style: const TextStyle(
-                fontSize: 16,
-                color: AppColor.primaryColor,
+            RichText(
+              text: TextSpan(
+                text: "Tags: ",
+                style: const TextStyle(
+                  fontSize: 14,
+                ),
+                children: <TextSpan>[
+                  if (ad.tags.isNotEmpty) ...[
+                    TextSpan(
+                      text: '#',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    for (var tag in ad.tags)
+                      TextSpan(
+                        text: "$tag# ",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                  ],
+                ],
               ),
             ),
             const SizedBox(height: 10),
@@ -87,13 +114,13 @@ class AdWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 OutlinedButton.icon(
-                  onPressed: () {},
+                  onPressed: onChat,
                   icon: const Icon(Icons.chat_bubble_outline),
                   label: const Text("Chat"),
                 ),
                 const SizedBox(width: 10),
                 OutlinedButton.icon(
-                  onPressed: () {},
+                  onPressed: onCall,
                   icon: const Icon(Icons.call),
                   label: const Text("Call"),
                   style: OutlinedButton.styleFrom(
