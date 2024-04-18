@@ -2,8 +2,10 @@ import 'package:advantage/models/ad.dart';
 import 'package:advantage/routes/app_routes.dart';
 import 'package:advantage/screens/home/controller/home_tab_controller.dart';
 import 'package:advantage/screens/home/controller/location_controller.dart';
+import 'package:advantage/screens/notifications/controllers/notifications_controller.dart';
 import 'package:advantage/widgets/ad_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class HomeTab extends StatefulWidget {
@@ -19,6 +21,8 @@ class _HomeTabState extends State<HomeTab> {
   final HomeTabController homeTabController = Get.find<HomeTabController>();
 
   final LocationController locationController = Get.find<LocationController>();
+  final NotificationController notificationController =
+      Get.find<NotificationController>();
 
   final FocusNode searchFocusNode = FocusNode();
 
@@ -61,9 +65,43 @@ class _HomeTabState extends State<HomeTab> {
               onPressed: () {
                 Get.toNamed(AppRoutes.notifications);
               },
-              icon: const Icon(
-                Icons.notifications_outlined,
-                size: 32,
+              icon: Stack(
+                children: <Widget>[
+                  const Icon(
+                    Icons.notifications_outlined,
+                    size: 32,
+                  ),
+                  Obx(
+                    () => Visibility(
+                      visible:
+                          notificationController.unreadNotifications.value > 0,
+                      child: Positioned(
+                        bottom: 5,
+                        right: 3,
+                        child: Container(
+                          padding: const EdgeInsets.all(1),
+                          decoration: BoxDecoration(
+                            color: Get.theme.colorScheme.primary,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 15,
+                            minHeight: 12,
+                          ),
+                          child: Text(
+                            notificationController.unreadNotifications.value
+                                .toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 8,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -133,7 +171,9 @@ class _HomeTabState extends State<HomeTab> {
                             .start, // Keep the start value constant
                         values.end, // Only update the end value
                       );
-                      homeTabController.rangeValues.value = newValues;
+                      if (newValues.start <= newValues.end) {
+                        homeTabController.rangeValues.value = newValues;
+                      }
                     },
                     min: 0,
                     max: 1000,
@@ -176,6 +216,7 @@ class _HomeTabState extends State<HomeTab> {
                           itemCount: homeTabController.ads.length,
                           itemBuilder: (context, index) {
                             Ad ad = homeTabController.ads[index];
+                            if (!ad.isVisible) return const SizedBox.shrink();
                             return AdWidget(ad: ad);
                           },
                         ),

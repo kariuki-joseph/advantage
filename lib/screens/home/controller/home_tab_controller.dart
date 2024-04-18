@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:js_interop';
 
 import 'package:advantage/models/ad.dart';
+import 'package:advantage/models/notification_model.dart';
 import 'package:advantage/models/subscription.dart';
 import 'package:advantage/models/user_model.dart';
 import 'package:advantage/screens/auth/controllers/auth_controller.dart';
 import 'package:advantage/screens/home/controller/location_controller.dart';
+import 'package:advantage/screens/notifications/controllers/notifications_controller.dart';
 import 'package:advantage/utils/toast_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +21,8 @@ class HomeTabController extends GetxController {
   final ScrollController scrollController = ScrollController();
   final UserModel loggedInUser = Get.find<AuthController>().user.value;
   final LocationController locationController = Get.find<LocationController>();
+  final NotificationController notificationController =
+      Get.find<NotificationController>();
 
   final TextEditingController searchController = TextEditingController();
 
@@ -36,10 +41,14 @@ class HomeTabController extends GetxController {
     // listen to changes in the search radius of the user and get ads within the radius
     ever(locationController.searchRadius, (_) => getAdsWithRadius());
 
-    await locationController.initConfig();
+    locationController.initConfig();
+    locationController.getAndUpdateUserLocation();
+    debugPrint("Ater finishing getting locatio upates");
     // get user's subscriptions
     await fetchSubscriptions();
-    await fetchAds();
+    await getAdsWithRadius();
+    // check user's notifications
+    notificationController.fetchNotifications();
   }
 
   Future<void> addSubscription(String keyword) async {
@@ -48,7 +57,10 @@ class HomeTabController extends GetxController {
     Subscription subscription =
         Subscription(userId: loggedInUser.id, keyword: keyword, id: subId);
     // add subscription to this keyword
-    _firestore.collection("subscriptions").doc(subId).set(subscription.toMap());
+    await _firestore
+        .collection("subscriptions")
+        .doc(subId)
+        .set(subscription.toMap());
     subscriptions.add(subscription);
     searchController.text = "";
   }
@@ -59,6 +71,7 @@ class HomeTabController extends GetxController {
         .collection("subscriptions")
         .where("userId", isEqualTo: loggedInUser.id)
         .get();
+    debugPrint("userId: ${loggedInUser.id}, Len: ${snapshot.docs.length}");
     if (snapshot.docs.isNotEmpty) {
       subscriptions.value = Subscription.fromQuerySnapshot(snapshot);
     }
@@ -74,7 +87,7 @@ class HomeTabController extends GetxController {
     }
   }
 
-  void refreshDistance() {
+  void recalculateDistance() {
     // recalculate distances once the location changes
     // update visibility of ads based on the geofence radius
     for (var ad in ads) {
@@ -88,22 +101,8 @@ class HomeTabController extends GetxController {
     ads.sort((a, b) => a.distance.compareTo(b.distance));
   }
 
-  // fetch ads from firebase
+  // fetching ads from firebase using geopoints
   Future<void> fetchAds() async {
-    isLoading.value = true;
-    try {
-      QuerySnapshot snapshot = await _firestore.collection("ads").get();
-      ads.value = Ad.fromQuerySnapshot(snapshot);
-      refreshDistance();
-    } catch (e) {
-      showErrorToast(e.toString());
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  // get ads when users's geofence radius changes
-  Future<void> getAdsWithRadius() async {
     isLoading.value = true;
     // create a geofence collection reference
     GeoFireCollectionRef collectionRef =
@@ -129,11 +128,74 @@ class HomeTabController extends GetxController {
       debugPrint(" Got ads within radius: ${documentList.length}");
       // update the ads with the new list
       ads.value = documentList.map((doc) => Ad.fromDocument(doc)).toList();
-      refreshDistance();
+      recalculateDistance();
+      debugPrint(
+          " Got ads within radius: ${locationController.searchRadius.value}");
     });
 
     subscription.onDone(() {
       isLoading.value = false;
     });
+  }
+
+  // get ads when users's geofence radius changes
+  Future<void> getAdsWithRadius() async {
+    isLoading.value = true;
+    try {
+      QuerySnapshot snapshot = await _firestore.collection("ads").get();
+      ads.value = Ad.fromQuerySnapshot(snapshot);
+      recalculateDistance();
+      checkSubscriptions();
+    } catch (e) {
+      showErrorToast(e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // check if there is any ad that matches the subscriptions of the user
+  void checkSubscriptions() {
+    for (var sub in subscriptions) {
+      for (var ad in ads) {
+        if (!ad.isVisible) continue;
+        if (ad.title.toLowerCase().contains(sub.keyword.toLowerCase()) ||
+            ad.description.toLowerCase().contains(sub.keyword.toLowerCase())) {
+          // check if user has already been notified about this ad
+          if (!notificationController.alreadyNotifiedAds.contains(ad.id)) {
+            createNotification(ad, sub);
+            notificationController.alreadyNotifiedAds.add(ad.id);
+          }
+          // don't check for tags for this ad. Just show the notification
+          continue;
+        }
+        // check for matching tags
+        for (var tag in ad.tags) {
+          if (tag.toLowerCase().contains(sub.keyword.toLowerCase())) {
+            // check if user has already been notified about this ad
+            if (!notificationController.alreadyNotifiedAds.contains(ad.id)) {
+              createNotification(ad, sub);
+              notificationController.alreadyNotifiedAds.add(ad.id);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // create notification
+  void createNotification(Ad ad, Subscription sub) {
+    NotificationModel notification = NotificationModel(
+      id: _firestore.collection("notifications").doc().id,
+      senderId: ad.userId,
+      senderName: ad.userName,
+      receiverId: loggedInUser.id,
+      createdAt: DateTime.now(),
+      title: 'New Match Found',
+      description:
+          'A new Ad matching your search subscription \'${sub.keyword}\' has been found. Check it out!',
+      isRead: false,
+    );
+
+    notificationController.createNotification(notification);
   }
 }

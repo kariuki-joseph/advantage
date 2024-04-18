@@ -1,15 +1,22 @@
-import 'package:advantage/models/ad_notification.dart';
+import 'package:advantage/models/notification_model.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class NotificationItemWidget extends StatelessWidget {
-  final AdNotification notification;
-  const NotificationItemWidget({super.key, required this.notification});
+  final NotificationModel notification;
+  final Function()? onTap;
+  final bool isRead;
+  const NotificationItemWidget({
+    super.key,
+    required this.notification,
+    required this.onTap,
+    required this.isRead,
+  });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(8.0),
         child: Row(
@@ -30,7 +37,7 @@ class NotificationItemWidget extends StatelessWidget {
                       color: Theme.of(context)
                           .colorScheme
                           .onSurface
-                          .withOpacity(notification.isRead ? 0.5 : 1.0),
+                          .withOpacity(isRead ? 0.5 : 1.0),
                     ),
                   ),
                   Text(
@@ -40,7 +47,7 @@ class NotificationItemWidget extends StatelessWidget {
                       color: Theme.of(context)
                           .colorScheme
                           .onSurface
-                          .withOpacity(notification.isRead ? 0.5 : 1.0),
+                          .withOpacity(isRead ? 0.5 : 1.0),
                     ),
                   )
                 ],

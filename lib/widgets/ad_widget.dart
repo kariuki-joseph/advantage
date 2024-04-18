@@ -11,9 +11,6 @@ class AdWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: ad.isVisible
-          ? Theme.of(context).colorScheme.surface
-          : Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
         side: const BorderSide(
@@ -73,6 +70,16 @@ class AdWidget extends StatelessWidget {
             Text(
               ad.description,
               style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              "Tags: ${ad.tags.isNotEmpty ? '#' : ''}${ad.tags.join("# ")}",
+              style: const TextStyle(
+                fontSize: 16,
+                color: AppColor.primaryColor,
+              ),
             ),
             const SizedBox(height: 10),
             // text and call icons

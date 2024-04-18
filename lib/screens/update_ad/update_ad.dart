@@ -22,7 +22,7 @@ class UpdateAd extends StatelessWidget {
               Get.back();
             },
           ),
-          title: const Text("Up Adate Ad"),
+          title: const Text("Update Ad"),
         ),
         body: Padding(
           padding: const EdgeInsets.all(10),
