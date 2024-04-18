@@ -210,25 +210,36 @@ class _HomeTabState extends State<HomeTab> {
                     return Obx(
                       () => RefreshIndicator(
                         onRefresh: () async {
-                          await homeTabController.getAdsWithRadius();
+                          await homeTabController.getAdsWithRadius(false);
                           locationController.getAndUpdateUserLocation();
                         },
-                        child: ListView.builder(
-                          itemCount: homeTabController.ads.length,
-                          itemBuilder: (context, index) {
-                            Ad ad = homeTabController.ads[index];
-                            if (!ad.isVisible) return const SizedBox.shrink();
-                            return AdWidget(
-                              ad: ad,
-                              onCall: () {
-                                homeTabController.callUser(ad.phoneNumber);
-                              },
-                              onChat: () {
-                                homeTabController.startChat(ad.userId);
-                              },
-                            );
-                          },
-                        ),
+                        child: homeTabController.ads
+                                .where((ad) => ad.isVisible)
+                                .isEmpty
+                            ? const Center(
+                                child: Text(
+                                  "There are no ads currently in your sorrounding. Try moving to a new place or adjust your search radius",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              )
+                            : ListView.builder(
+                                itemCount: homeTabController.ads.length,
+                                itemBuilder: (context, index) {
+                                  Ad ad = homeTabController.ads[index];
+                                  if (!ad.isVisible)
+                                    return const SizedBox.shrink();
+                                  return AdWidget(
+                                    ad: ad,
+                                    onCall: () {
+                                      homeTabController
+                                          .callUser(ad.phoneNumber);
+                                    },
+                                    onChat: () {
+                                      homeTabController.startChat(ad.userId);
+                                    },
+                                  );
+                                },
+                              ),
                       ),
                     );
                   },

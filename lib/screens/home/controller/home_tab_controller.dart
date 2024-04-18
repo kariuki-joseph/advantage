@@ -12,6 +12,7 @@ import 'package:advantage/screens/notifications/controllers/notifications_contro
 import 'package:advantage/utils/toast_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -39,16 +40,16 @@ class HomeTabController extends GetxController {
     super.onInit();
 
     // listen to changes in user location and recalculate distances
-    ever(locationController.userLocation, (_) => getAdsWithRadius());
+    ever(locationController.userLocation, (_) => getAdsWithRadius(true));
     // listen to changes in the search radius of the user and get ads within the radius
-    ever(locationController.searchRadius, (_) => getAdsWithRadius());
+    ever(locationController.searchRadius, (_) => getAdsWithRadius(false));
 
     locationController.initConfig();
     locationController.getAndUpdateUserLocation();
     debugPrint("Ater finishing getting locatio upates");
     // get user's subscriptions
     await fetchSubscriptions();
-    await getAdsWithRadius();
+    await getAdsWithRadius(false);
     // check user's notifications
     notificationController.fetchNotifications();
   }
@@ -141,7 +142,10 @@ class HomeTabController extends GetxController {
   }
 
   // get ads when users's geofence radius changes
-  Future<void> getAdsWithRadius() async {
+  Future<void> getAdsWithRadius(bool auto) async {
+    if (auto) {
+      Fluttertoast.showToast(msg: "Recalculating...");
+    }
     isLoading.value = true;
     try {
       QuerySnapshot snapshot = await _firestore.collection("ads").get();

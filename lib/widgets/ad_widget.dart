@@ -96,14 +96,13 @@ class AdWidget extends StatelessWidget {
                         color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
-                    for (var tag in ad.tags)
-                      TextSpan(
-                        text: "$tag# ",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+                    TextSpan(
+                      text: "${ad.tags.join("#, ")} ",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
+                    ),
                   ],
                 ],
               ),
