@@ -15,7 +15,7 @@ class PrimaryButton extends StatelessWidget {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: Theme.of(context).primaryColor,
-          foregroundColor: Theme.of(context).colorScheme.onPrimary,
+          foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
         ),
         onPressed: onPressed,
         child: child ?? const Text(""),
