@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class PinField extends StatelessWidget {
   final bool isFilled;
@@ -10,9 +11,9 @@ class PinField extends StatelessWidget {
       width: 24,
       height: 24,
       decoration: BoxDecoration(
-        color: isFilled ? Colors.white : Colors.transparent,
+        color: isFilled ? Get.theme.colorScheme.onPrimary : Colors.transparent,
         borderRadius: BorderRadius.circular(100),
-        border: Border.all(color: Colors.white),
+        border: Border.all(color: Get.theme.colorScheme.onPrimary),
       ),
     );
   }

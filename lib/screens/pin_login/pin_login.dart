@@ -30,10 +30,10 @@ class _PinLoginState extends State<PinLogin> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Spacer(),
-            const Icon(
+            Icon(
               Icons.lock_outline,
               size: 100,
-              color: Colors.white,
+              color: Get.theme.colorScheme.onPrimary,
             ),
             const SizedBox(
               height: 10,
@@ -48,10 +48,10 @@ class _PinLoginState extends State<PinLogin> {
                 style: TextStyle(
                   fontSize: 16,
                   color: controller.isPinWrong.value
-                      ? Colors.red
+                      ? Get.theme.colorScheme.error
                       : controller.isLoginSuccess.value
                           ? Colors.green
-                          : Colors.white,
+                          : Get.theme.colorScheme.onPrimary,
                 ),
               ),
             ),
@@ -154,7 +154,7 @@ class _PinLoginState extends State<PinLogin> {
                   TextSpan(
                     text: "Forgot PIN? ",
                     style: Get.theme.textTheme.labelLarge?.copyWith(
-                      color: Colors.white,
+                      color: Get.theme.colorScheme.onPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                     recognizer: TapGestureRecognizer()

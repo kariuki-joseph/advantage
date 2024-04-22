@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class PinButton extends StatefulWidget {
   final Function() onPressed;
@@ -20,25 +21,28 @@ class _PinButtonState extends State<PinButton> {
       child: (widget.number == "del")
           ? IconButton(
               onPressed: widget.onPressed,
-              icon: const Icon(
+              icon: Icon(
                 Icons.backspace_outlined,
-                color: Colors.white,
+                color: Get.theme.colorScheme.onPrimary,
               ),
               padding: const EdgeInsets.all(10),
             )
           : (widget.number == "fingerPrint")
               ? IconButton(
                   onPressed: widget.onPressed,
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.fingerprint,
-                    color: Colors.white,
+                    color: Get.theme.colorScheme.onPrimary,
                     size: 30,
                   ),
                   padding: const EdgeInsets.all(10),
                 )
               : Text(
                   widget.number,
-                  style: const TextStyle(fontSize: 24, color: Colors.white),
+                  style: Get.theme.textTheme.titleSmall?.copyWith(
+                    fontSize: 24,
+                    color: Get.theme.colorScheme.onPrimary,
+                  ),
                 ),
     );
   }

@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:advantage/screens/home/controller/messages_controller.dart';
-import 'package:advantage/themes/custom_chat_theme.dart';
-import 'package:advantage/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -17,13 +15,11 @@ class ChatFacebookScreen extends StatefulWidget {
 
 class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
   TextEditingController? _chatTextController;
-  CustomChatTheme customChatTheme = CustomChatTheme.getFacebookTheme();
 
   ScrollController? _scrollController;
 
   final List<String> _simpleChoice = ["Create shortcut", "Clear chat"];
 
-  late CustomTheme customTheme;
   late ThemeData theme;
 
   final MessagesController messagesController = Get.find<MessagesController>();
@@ -33,8 +29,6 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
     super.initState();
     // fetch conversations
     messagesController.fetchMessages();
-
-    customTheme = CustomTheme.darkCustomTheme;
     _chatTextController = TextEditingController();
     _scrollController = ScrollController();
   }
@@ -44,7 +38,7 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
     theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: customChatTheme.appBarColor,
+        backgroundColor: Get.theme.appBarTheme.backgroundColor,
         automaticallyImplyLeading: false,
         title: Row(
           children: <Widget>[
@@ -61,7 +55,7 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                     height: 30,
                     child: Icon(
                       LucideIcons.arrowLeft,
-                      color: customChatTheme.btnColor,
+                      color: Get.theme.colorScheme.primary,
                       size: 24,
                     ),
                   ),
@@ -94,14 +88,9 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                       () => Text(
                         messagesController.receiverName.value,
                         style: Get.theme.textTheme.titleLarge?.copyWith(
-                          color: theme.colorScheme.onPrimary,
+                          color: theme.colorScheme.onPrimaryContainer,
                         ),
                       ),
-                    ),
-                    Text(
-                      "",
-                      style: TextStyle(
-                          height: 1.2, color: theme.colorScheme.onPrimary),
                     ),
                   ],
                 ),
@@ -112,13 +101,13 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
         actions: <Widget>[
           Icon(
             LucideIcons.phone,
-            color: customChatTheme.btnColor,
+            color: Get.theme.colorScheme.primary,
           ),
           Container(
               margin: const EdgeInsets.only(left: 16),
               child: Icon(
                 LucideIcons.video,
-                color: customChatTheme.btnColor,
+                color: Get.theme.colorScheme.primary,
               )),
           PopupMenuButton(
             onSelected: (dynamic choice) {
@@ -135,13 +124,13 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
             color: theme.colorScheme.background,
             icon: Icon(
               LucideIcons.moreVertical,
-              color: customChatTheme.btnColor,
+              color: Get.theme.colorScheme.primary,
             ),
           ),
         ],
       ),
       body: Container(
-        color: customChatTheme.backgroundColor,
+        color: Get.theme.colorScheme.background,
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
         child: Padding(
             padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
@@ -216,7 +205,7 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                                   child: Icon(
                                     LucideIcons.paperclip,
                                     size: 24,
-                                    color: customChatTheme.btnColor,
+                                    color: Get.theme.colorScheme.primary,
                                   ),
                                 )),
                             onTap: () {
@@ -230,7 +219,7 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                         child: Container(
                           padding: const EdgeInsets.only(left: 16),
                           decoration: BoxDecoration(
-                            color: customChatTheme.textFieldBackground,
+                            color: Get.theme.colorScheme.primaryContainer,
                             borderRadius: const BorderRadius.all(
                               Radius.circular(24.0),
                             ),
@@ -247,15 +236,15 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                                     minLines: 1,
                                     style: theme.textTheme.bodyLarge!.merge(
                                         TextStyle(
-                                            color: customChatTheme
-                                                .textOnTextField)),
+                                            color: Get.theme.colorScheme
+                                                .onPrimaryContainer)),
                                     decoration: InputDecoration(
                                       hintText: "Type a message...",
                                       isDense: true,
                                       hintStyle: theme.textTheme.titleMedium!
                                           .merge(TextStyle(
-                                              color: customChatTheme
-                                                  .textOnTextField!
+                                              color: Get
+                                                  .theme.colorScheme.onSurface
                                                   .withAlpha(220))),
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,
@@ -282,7 +271,7 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                                         child: Icon(
                                           LucideIcons.smile,
                                           size: 24,
-                                          color: customChatTheme.btnColor,
+                                          color: Get.theme.colorScheme.primary,
                                         )),
                                     onTap: () {},
                                   ),
@@ -308,7 +297,7 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                                     child: Icon(
                                       LucideIcons.send,
                                       size: 22,
-                                      color: customChatTheme.btnColor,
+                                      color: Get.theme.colorScheme.primary,
                                     ),
                                   ),
                                 ),
@@ -335,12 +324,12 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
           margin: const EdgeInsets.only(top: 8),
           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           decoration: BoxDecoration(
-            color: customChatTheme.myChatBG,
+            color: Get.theme.colorScheme.primaryContainer,
             borderRadius: makeChatBubble(index),
           ),
           child: Text(messagesController.userMessages[index].message,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: customChatTheme.onMyChat,
+                    color: Get.theme.colorScheme.onPrimaryContainer,
                     fontWeight: FontWeight.w500,
                     overflow: TextOverflow.fade,
                   )));
@@ -356,7 +345,7 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
               height: 24,
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage("./assets/images/profile/avatar_2.jpg"),
+                    image: AssetImage("images/user_avatar.jpg"),
                     fit: BoxFit.fill),
                 shape: BoxShape.circle,
               ),
@@ -365,14 +354,14 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                 decoration: BoxDecoration(
-                  color: customChatTheme.chatBG,
+                  color: Get.theme.colorScheme.background,
                   borderRadius: makeChatBubble(index),
                 ),
                 child: Text(
                   messagesController.userMessages[index].message,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       overflow: TextOverflow.fade,
-                      color: customChatTheme.onChat),
+                      color: Get.theme.colorScheme.onBackground),
                 ),
               ),
             ),
@@ -472,11 +461,11 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
 
   Widget deleteAllChatDialog() {
     return Dialog(
-      backgroundColor: customChatTheme.backgroundColor,
+      backgroundColor: Get.theme.colorScheme.background,
       child: Container(
         padding: const EdgeInsets.only(top: 24, bottom: 0, left: 24, right: 0),
         decoration: BoxDecoration(
-          color: customChatTheme.backgroundColor,
+          color: Get.theme.colorScheme.background,
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.circular(8),
           boxShadow: const [
@@ -496,7 +485,7 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
               child: Text(
                 "Are you sure to clear messages in this chat",
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: customChatTheme.onBackground,
+                      color: Get.theme.colorScheme.onBackground,
                     ),
               ),
             ),
@@ -624,7 +613,7 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
         children: <Widget>[
           ClipOval(
             child: Material(
-              color: customChatTheme.btnColor, // button color
+              color: Get.theme.colorScheme.primary, // button color
               child: InkWell(
                 splashColor: Colors.white,
                 // inkwell color
@@ -633,7 +622,7 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                     height: 52,
                     child: Icon(
                       iconData,
-                      color: customChatTheme.iconOnBtn,
+                      color: Get.theme.colorScheme.primary,
                       size: 25,
                     )),
                 onTap: () {},
