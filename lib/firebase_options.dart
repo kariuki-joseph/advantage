@@ -25,10 +25,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -52,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '842278875570',
     projectId: 'advantage-5b7f7',
     authDomain: 'advantage-5b7f7.firebaseapp.com',
+    databaseURL: 'https://advantage-5b7f7-default-rtdb.firebaseio.com',
     storageBucket: 'advantage-5b7f7.appspot.com',
     measurementId: 'G-9265HHGE8K',
   );
@@ -61,6 +59,7 @@ class DefaultFirebaseOptions {
     appId: '1:842278875570:android:651357fb7872d77ad234ab',
     messagingSenderId: '842278875570',
     projectId: 'advantage-5b7f7',
+    databaseURL: 'https://advantage-5b7f7-default-rtdb.firebaseio.com',
     storageBucket: 'advantage-5b7f7.appspot.com',
   );
 
@@ -69,7 +68,18 @@ class DefaultFirebaseOptions {
     appId: '1:842278875570:ios:47e652c142c5c364d234ab',
     messagingSenderId: '842278875570',
     projectId: 'advantage-5b7f7',
+    databaseURL: 'https://advantage-5b7f7-default-rtdb.firebaseio.com',
     storageBucket: 'advantage-5b7f7.appspot.com',
     iosBundleId: 'com.example.advantage',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyBajbP2u_CkH0ccKoh1FaOiitMspNXg73E',
+    appId: '1:842278875570:ios:ed235cf605e2d08ed234ab',
+    messagingSenderId: '842278875570',
+    projectId: 'advantage-5b7f7',
+    databaseURL: 'https://advantage-5b7f7-default-rtdb.firebaseio.com',
+    storageBucket: 'advantage-5b7f7.appspot.com',
+    iosBundleId: 'com.example.advantage.RunnerTests',
   );
 }

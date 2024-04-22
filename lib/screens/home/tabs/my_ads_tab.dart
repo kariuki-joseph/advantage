@@ -1,4 +1,3 @@
-import 'package:advantage/constants/app_color.dart';
 import 'package:advantage/models/ad.dart';
 import 'package:advantage/routes/app_routes.dart';
 import 'package:advantage/screens/home/controller/my_ads_controller.dart';

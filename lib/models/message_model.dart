@@ -1,6 +1,4 @@
-import 'dart:html';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class MessageModel {
   final String id;
@@ -21,38 +19,29 @@ class MessageModel {
     bool? isRead,
   }) {
     if (createdAt != null) {
-      createdAt = createdAt;
+      this.createdAt = createdAt;
+    }
+    if (isRead != null) {
+      this.isRead = isRead;
     }
   }
-  factory MessageModel.fromJson(Map<String, dynamic> json) {
-    return MessageModel(
-      id: json['id'],
-      senderId: json['senderId'],
-      senderName: json['senderName'],
-      receiverId: json['receiverId'],
-      message: json['message'],
-      createdAt: (json['createdAt'] as Timestamp).toDate(),
-      isRead: json['isRead'],
-    );
-  }
 
-  factory MessageModel.fromDocumentSnapshot(DocumentSnapshot data) {
-    return MessageModel(
-      id: data['id'],
-      senderId: data['senderId'],
-      senderName: data['senderName'],
-      receiverId: data['receiverId'],
-      message: data['message'],
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
-      isRead: data['isRead'],
-    );
-  }
+  factory MessageModel.fromRealtimeSnapshot(DataSnapshot data) {
+    // get the data as a Map
+    if (data.value == null) {
+      throw Exception('Data Snapshot is null in message model');
+    }
+    Map<dynamic, dynamic> dataMap = data.value as Map<dynamic, dynamic>;
 
-  // from QuerySnapshot
-  static List<MessageModel> fromQuerySnapshot(QuerySnapshot data) {
-    return data.docs
-        .map((doc) => MessageModel.fromDocumentSnapshot(doc))
-        .toList();
+    return MessageModel(
+      id: data.key!,
+      senderId: dataMap['senderId'] as String,
+      senderName: dataMap['senderName'] as String,
+      receiverId: dataMap['receiverId'] as String,
+      message: dataMap['message'] as String,
+      createdAt: DateTime.parse(dataMap['createdAt']!),
+      isRead: dataMap['isRead'] as bool,
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -62,7 +51,7 @@ class MessageModel {
       'senderName': senderName,
       'receiverId': receiverId,
       'message': message,
-      'createdAt': createdAt,
+      'createdAt': createdAt.toIso8601String(),
       'isRead': isRead,
     };
   }

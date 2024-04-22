@@ -1,3 +1,4 @@
+import 'package:advantage/models/ad.dart';
 import 'package:advantage/models/notification_model.dart';
 import 'package:advantage/screens/auth/controllers/auth_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,7 +12,7 @@ class NotificationController extends GetxController {
   final AuthController authController = Get.find<AuthController>();
   final isLoading = false.obs;
   final RxInt unreadNotifications = 0.obs;
-  final Set<String> alreadyNotifiedAds = <String>{};
+  final Set<Ad> alreadyNotifiedAds = <Ad>{};
 
   @override
   void onInit() {

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:js_interop';
 
 import 'package:advantage/models/ad.dart';
 import 'package:advantage/models/notification_model.dart';
@@ -85,6 +84,10 @@ class HomeTabController extends GetxController {
     try {
       _firestore.collection("subscriptions").doc(subscription.id).delete();
       subscriptions.remove(subscription);
+      // remove from already notified ads matching this subscription
+      notificationController.alreadyNotifiedAds.removeWhere((ad) =>
+          ad.tags.contains(subscription.keyword) ||
+          ad.title.contains(subscription.keyword));
     } catch (e) {
       showErrorToast(e.toString());
     }
@@ -167,9 +170,9 @@ class HomeTabController extends GetxController {
         if (ad.title.toLowerCase().contains(sub.keyword.toLowerCase()) ||
             ad.description.toLowerCase().contains(sub.keyword.toLowerCase())) {
           // check if user has already been notified about this ad
-          if (!notificationController.alreadyNotifiedAds.contains(ad.id)) {
+          if (!notificationController.alreadyNotifiedAds.contains(ad)) {
             createNotification(ad, sub);
-            notificationController.alreadyNotifiedAds.add(ad.id);
+            notificationController.alreadyNotifiedAds.add(ad);
           }
           // don't check for tags for this ad. Just show the notification
           continue;
@@ -178,9 +181,9 @@ class HomeTabController extends GetxController {
         for (var tag in ad.tags) {
           if (tag.toLowerCase().contains(sub.keyword.toLowerCase())) {
             // check if user has already been notified about this ad
-            if (!notificationController.alreadyNotifiedAds.contains(ad.id)) {
+            if (!notificationController.alreadyNotifiedAds.contains(ad)) {
               createNotification(ad, sub);
-              notificationController.alreadyNotifiedAds.add(ad.id);
+              notificationController.alreadyNotifiedAds.add(ad);
             }
           }
         }

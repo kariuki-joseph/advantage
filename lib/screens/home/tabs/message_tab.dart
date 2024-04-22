@@ -1,6 +1,6 @@
 import 'package:advantage/routes/app_routes.dart';
 import 'package:advantage/screens/home/controller/messages_controller.dart';
-import 'package:advantage/widgets/message_item.dart';
+import 'package:advantage/widgets/conversation_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,7 +19,7 @@ class MessagesTab extends StatelessWidget {
         () => ListView.builder(
           itemCount: messagesController.messagePreviews.length,
           itemBuilder: ((context, index) {
-            return PreviewMessageWidget(
+            return ConversationWidget(
               messagePreview:
                   messagesController.messagePreviews.elementAt(index),
               onTap: () {
@@ -28,7 +28,7 @@ class MessagesTab extends StatelessWidget {
                   AppRoutes.chat,
                   arguments: messagesController.messagePreviews
                       .elementAt(index)
-                      .senderId,
+                      .lastMessageId,
                 );
               },
             );

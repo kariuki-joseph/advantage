@@ -1,11 +1,11 @@
-import 'package:advantage/models/message_preview.dart';
+import 'package:advantage/models/conversation.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class PreviewMessageWidget extends StatelessWidget {
-  final MessagePreview messagePreview;
+class ConversationWidget extends StatelessWidget {
+  final Conversation messagePreview;
   final Function()? onTap;
-  const PreviewMessageWidget({
+  const ConversationWidget({
     super.key,
     required this.messagePreview,
     required this.onTap,
@@ -20,7 +20,7 @@ class PreviewMessageWidget extends StatelessWidget {
           backgroundImage: AssetImage("images/user_avatar.png"),
         ),
         title: Text(
-          messagePreview.senderName,
+          messagePreview.otherName,
           style: const TextStyle(fontSize: 16),
         ),
         subtitle: Text(

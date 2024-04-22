@@ -36,6 +36,7 @@ class _HomeTabState extends State<HomeTab> {
               child: SearchBar(
                 controller: homeTabController.searchController,
                 focusNode: searchFocusNode,
+                hintText: 'Search',
                 leading: IconButton(
                   onPressed: () {
                     Get.toNamed(AppRoutes.profile);
@@ -137,7 +138,10 @@ class _HomeTabState extends State<HomeTab> {
             () => RichText(
               text: TextSpan(
                 children: [
-                  const TextSpan(text: 'Search Radius: '),
+                  TextSpan(
+                    text: 'Search Radius: ',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                   TextSpan(
                     text:
                         '${homeTabController.rangeValues.value.end.round()} m',
@@ -226,8 +230,9 @@ class _HomeTabState extends State<HomeTab> {
                                 itemCount: homeTabController.ads.length,
                                 itemBuilder: (context, index) {
                                   Ad ad = homeTabController.ads[index];
-                                  if (!ad.isVisible)
+                                  if (!ad.isVisible) {
                                     return const SizedBox.shrink();
+                                  }
                                   return AdWidget(
                                     ad: ad,
                                     onCall: () {

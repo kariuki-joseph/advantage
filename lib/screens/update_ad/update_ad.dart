@@ -1,4 +1,3 @@
-import 'package:advantage/constants/app_color.dart';
 import 'package:advantage/screens/home/controller/location_controller.dart';
 import 'package:advantage/screens/update_ad/controller/controller/update_ad_controller.dart';
 import 'package:advantage/widgets/my_btn_loader.dart';

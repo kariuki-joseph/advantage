@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:advantage/screens/home/controller/messages_controller.dart';
 import 'package:advantage/themes/custom_chat_theme.dart';
 import 'package:advantage/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
@@ -28,15 +29,14 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
   TextEditingController? _chatTextController;
   CustomChatTheme customChatTheme = CustomChatTheme.getFacebookTheme();
 
-  final List<ChatPage> _chatList = [];
-
   ScrollController? _scrollController;
 
   final List<String> _simpleChoice = ["Create shortcut", "Clear chat"];
 
-  final List<Timer> _timers = [];
   late CustomTheme customTheme;
   late ThemeData theme;
+
+  final MessagesController messagesController = Get.find<MessagesController>();
 
   @override
   initState() {
@@ -44,20 +44,6 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
     customTheme = CustomTheme.darkCustomTheme;
     _chatTextController = TextEditingController();
     _scrollController = ScrollController();
-
-    _chatList.add(ChatPage("Hii", ChatPage.myId,
-        DateTime.now().millisecondsSinceEpoch.toString(), "sent"));
-    _chatList.add(ChatPage("Hii", ChatPage.otherId,
-        DateTime.now().millisecondsSinceEpoch.toString(), "sent"));
-  }
-
-  @override
-  dispose() {
-    super.dispose();
-    _scrollController!.dispose();
-    for (Timer timer in _timers) {
-      timer.cancel();
-    }
   }
 
   @override
@@ -78,13 +64,14 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                   splashColor: Colors.white,
                   // inkwell color
                   child: SizedBox(
-                      width: 30,
-                      height: 30,
-                      child: Icon(
-                        LucideIcons.arrowLeft,
-                        color: customChatTheme.btnColor,
-                        size: 24,
-                      )),
+                    width: 30,
+                    height: 30,
+                    child: Icon(
+                      LucideIcons.arrowLeft,
+                      color: customChatTheme.btnColor,
+                      size: 24,
+                    ),
+                  ),
                   onTap: () {
                     Navigator.of(context).pop();
                   },
@@ -97,8 +84,9 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
               height: 40,
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage("./assets/images/profile/avatar_2.jpg"),
-                    fit: BoxFit.fill),
+                  image: AssetImage("images/user_avatar.png"),
+                  fit: BoxFit.fill,
+                ),
                 shape: BoxShape.circle,
               ),
             ),
@@ -110,13 +98,13 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      "Buster Ryan",
+                      "ADvantage",
                       style: Get.theme.textTheme.titleLarge?.copyWith(
                         color: theme.colorScheme.onPrimary,
                       ),
                     ),
                     Text(
-                      "Active 4 hour ago",
+                      "",
                       style: TextStyle(
                           height: 1.2, color: theme.colorScheme.onPrimary),
                     ),
@@ -168,7 +156,8 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                   margin: const EdgeInsets.only(top: 8),
                   child: Center(
                     child: Text(
-                      "16 AUG 2020 AT 9:44 PM",
+                      // "16 AUG 2020 AT 9:44 PM",
+                      "",
                       style: TextStyle(
                         color: theme.colorScheme.onBackground,
                         letterSpacing: 0.3,
@@ -179,33 +168,39 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                 ),
                 Expanded(
                   flex: 1,
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.all(0),
-                    itemCount: _chatList.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: index == 0
-                            ? const EdgeInsets.only(top: 8, bottom: 1).add(
-                                _chatList[index].from.compareTo(ChatPage.myId) == 0
-                                    ? EdgeInsets.only(
-                                        left: MediaQuery.of(context).size.width *
-                                            0.2)
-                                    : EdgeInsets.only(
-                                        right: MediaQuery.of(context).size.width *
-                                            0.2))
-                            : const EdgeInsets.only(top: 1, bottom: 1).add(
-                                _chatList[index].from.compareTo(ChatPage.myId) == 0
-                                    ? EdgeInsets.only(
-                                        left: MediaQuery.of(context).size.width * 0.2)
-                                    : EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.2)),
-                        alignment:
-                            _chatList[index].from.compareTo(ChatPage.myId) == 0
-                                ? Alignment.centerRight
-                                : Alignment.centerLeft,
-                        child: singleChat(index),
-                      );
-                    },
+                  child: Obx(
+                    () => ListView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.all(0),
+                      itemCount: messagesController.userMessages.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          margin: index == 0
+                              ? const EdgeInsets.only(top: 8, bottom: 1).add(
+                                  messagesController.userMessages[index].senderId.compareTo(messagesController.loggedInUser.id) == 0
+                                      ? EdgeInsets.only(
+                                          left:
+                                              MediaQuery.of(context).size.width *
+                                                  0.2)
+                                      : EdgeInsets.only(
+                                          right:
+                                              MediaQuery.of(context).size.width *
+                                                  0.2))
+                              : const EdgeInsets.only(top: 1, bottom: 1).add(
+                                  messagesController.userMessages[index].senderId.compareTo(messagesController.loggedInUser.id) == 0
+                                      ? EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.2)
+                                      : EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.2)),
+                          alignment: messagesController
+                                      .userMessages[index].senderId
+                                      .compareTo(
+                                          messagesController.loggedInUser.id) ==
+                                  0
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
+                          child: singleChat(index),
+                        );
+                      },
+                    ),
                   ),
                 ),
                 Padding(
@@ -240,9 +235,11 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                         child: Container(
                           padding: const EdgeInsets.only(left: 16),
                           decoration: BoxDecoration(
-                              color: customChatTheme.textFieldBackground,
-                              borderRadius: const BorderRadius.all(
-                                  Radius.circular(24.0))),
+                            color: customChatTheme.textFieldBackground,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(24.0),
+                            ),
+                          ),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: <Widget>[
@@ -272,6 +269,8 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                                       disabledBorder: InputBorder.none,
                                     ),
                                     controller: _chatTextController,
+                                    onSubmitted: (String text) =>
+                                        sendMessage(text),
                                   ),
                                 ),
                               ),
@@ -333,7 +332,9 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
   }
 
   Widget singleChat(int index) {
-    if (_chatList[index].from.compareTo(ChatPage.myId) == 0) {
+    if (messagesController.userMessages[index].senderId
+            .compareTo(messagesController.loggedInUser.id) ==
+        0) {
       return Container(
           margin: const EdgeInsets.only(top: 8),
           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -341,7 +342,7 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
             color: customChatTheme.myChatBG,
             borderRadius: makeChatBubble(index),
           ),
-          child: Text(_chatList[index].message,
+          child: Text(messagesController.userMessages[index].message,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: customChatTheme.onMyChat,
                     fontWeight: FontWeight.w500,
@@ -372,7 +373,7 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                   borderRadius: makeChatBubble(index),
                 ),
                 child: Text(
-                  _chatList[index].message,
+                  messagesController.userMessages[index].message,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       overflow: TextOverflow.fade,
                       color: customChatTheme.onChat),
@@ -409,9 +410,13 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
   }
 
   BorderRadius makeChatBubble(int index) {
-    if (_chatList[index].from.compareTo(ChatPage.myId) == 0) {
+    if (messagesController.userMessages[index].senderId
+            .compareTo(messagesController.loggedInUser.id) ==
+        0) {
       if (index != 0) {
-        if (_chatList[index - 1].from.compareTo(ChatPage.myId) == 0) {
+        if (messagesController.userMessages[index - 1].senderId
+                .compareTo(messagesController.loggedInUser.id) ==
+            0) {
           return const BorderRadius.only(
               topLeft: Radius.circular(12),
               bottomRight: Radius.circular(12),
@@ -433,7 +438,9 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
       }
     } else {
       if (index != 0) {
-        if (_chatList[index - 1].from.compareTo(ChatPage.myId) != 0) {
+        if (messagesController.userMessages[index - 1].senderId
+                .compareTo(messagesController.loggedInUser.id) !=
+            0) {
           return const BorderRadius.only(
               topLeft: Radius.circular(12),
               bottomRight: Radius.circular(12),
@@ -527,29 +534,9 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
 
   void sendMessage(String message) {
     if (message.isNotEmpty) {
-      setState(() {
-        _chatTextController!.clear();
-        _chatList.add(ChatPage(message, ChatPage.myId,
-            DateTime.now().millisecondsSinceEpoch.toString(), "sent"));
-        startTimer(_chatList.length - 1, message);
-      });
-      scrollToBottom(isDelayed: true);
+      messagesController.sendMessage(message, widget.receiverId);
+      _chatTextController!.clear();
     }
-  }
-
-  void startTimer(int index, String message) {
-    const oneSec = Duration(seconds: 1);
-    Timer timer = Timer.periodic(
-        oneSec, (Timer timer) => {timer.cancel(), sentFromOther(message)});
-    _timers.add(timer);
-  }
-
-  void sentFromOther(String message) {
-    setState(() {
-      _chatList.add(ChatPage(message, ChatPage.otherId,
-          DateTime.now().millisecondsSinceEpoch.toString(), "sent"));
-      scrollToBottom(isDelayed: true);
-    });
   }
 
   scrollToBottom({bool isDelayed = false}) {

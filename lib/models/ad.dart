@@ -72,4 +72,17 @@ class Ad {
   static List<Ad> fromQuerySnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) => Ad.fromDocument(doc)).toList();
   }
+
+  // override compare to use ad id
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Ad && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode;
+  }
 }

@@ -1,68 +1,135 @@
 import 'package:advantage/models/message_model.dart';
-import 'package:advantage/models/message_preview.dart';
+import 'package:advantage/models/conversation.dart';
 import 'package:advantage/models/user_model.dart';
 import 'package:advantage/screens/auth/controllers/auth_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MessagesController extends GetxController {
+  final FirebaseDatabase _db = FirebaseDatabase.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final RxList<MessageModel> userMessages = <MessageModel>[].obs;
-  final RxSet<MessagePreview> messagePreviews = RxSet<MessagePreview>();
+  final RxSet<Conversation> messagePreviews = RxSet<Conversation>();
   final UserModel loggedInUser = Get.find<AuthController>().user.value;
+  final Set<String> listenedConversations = {};
+  final Map<String, UserModel> chatUsers = {};
+  final UserModel receiver = UserModel();
 
   @override
   void onInit() async {
     super.onInit();
 
-    await getUserMessages();
+    await getUserConversations();
   }
 
-  Future<void> getUserMessages() async {
-    QuerySnapshot snapshot = await _firestore
-        .collection("messages")
-        .where("receiverId", isEqualTo: loggedInUser.id)
-        .orderBy("createdAt",
-            descending: true) // Sorting by createdAt in descending order
-        .get();
+  Future<void> getUserConversations() async {
+    // get conversations the current user is involved in
+    _db.ref("conversations").onChildAdded.listen((event) async {
+      DataSnapshot snapshot = event.snapshot;
 
-    List<MessageModel> messages = MessageModel.fromQuerySnapshot(snapshot);
-    // create message previews (Group messages from same user)
-    for (var message in messages) {
-      MessagePreview preview = MessagePreview(
-          senderId: message.senderId,
-          senderName: message.senderName,
-          unreadCount: 1,
-          lastMessageTime: message.createdAt);
-
-      if (!messagePreviews.contains(preview)) {
-        messagePreviews.add(preview);
-      } else {
-        // If the preview already exists, update the unread count and last message time
-        messagePreviews
-            .firstWhere((element) => element == preview)
-            .unreadCount = messagePreviews
-                .firstWhere((element) => element == preview)
-                .unreadCount +
-            1;
+      if (snapshot.value == null) {
+        return;
       }
+
+      // check snapshot for the current user id and add to messagePreviews
+      if (snapshot.key!.contains(loggedInUser.id)) {
+        Conversation conversation = Conversation.fromRealtimeSnapshot(snapshot);
+        // extract the receiver id from the conversation id
+        String receiverId =
+            snapshot.key!.replaceAll(loggedInUser.id, "").replaceAll("-", "");
+        if (receiverId.isEmpty) {
+          receiverId = loggedInUser.id;
+        }
+
+        await fetchReceiver(receiverId);
+
+        messagePreviews.add(conversation);
+        // only listen for messages once
+        if (!listenedConversations.contains(snapshot.key!)) {
+          listenForMessages(snapshot.key!);
+          listenedConversations.add(snapshot.key!);
+        }
+      }
+    });
+  }
+
+  // listen for messages in a conversation
+  void listenForMessages(String conversationId) {
+    debugPrint("Listening for messages in $conversationId");
+
+    _db.ref("messages").child(conversationId).onChildAdded.listen((event) {
+      DataSnapshot snapshot = event.snapshot;
+
+      if (snapshot.value == null) {
+        return;
+      }
+
+      MessageModel message = MessageModel.fromRealtimeSnapshot(snapshot);
+
+      userMessages.add(message);
+    });
+  }
+
+// fetch the receiver of the message from firestore
+  Future<void> fetchReceiver(String receiverId) async {
+    DocumentSnapshot snapshot =
+        await _firestore.collection("users").doc(receiverId).get();
+
+    if (snapshot.exists) {
+      UserModel receiver = UserModel.fromDocument(snapshot);
+      debugPrint("Received user ${receiver.username}");
+      chatUsers[receiverId] = receiver;
     }
-    // add to messages observable list
-    userMessages.assignAll(messages);
   }
 
-  Future<void> sendMessage(MessageModel message) async {
-    await _firestore.collection("messages").add(message.toJson());
-  }
+  Future<void> sendMessage(String message, String receiverId) async {
+    // Determine the conversation ID
+    String conversationId;
+    if (loggedInUser.id.compareTo(receiverId) < 0) {
+      conversationId = '${loggedInUser.id}-$receiverId';
+    } else {
+      conversationId = '$receiverId-${loggedInUser.id}';
+    }
 
-  // creae a message
-  MessageModel createMessage(String message, UserModel receiver) {
-    return MessageModel(
-      id: _firestore.collection("messages").doc().id,
+    // Generate a new message ID
+    String? messageId = _db
+            .ref("messages")
+            .child(conversationId.isNotEmpty ? conversationId : "temp")
+            .push()
+            .key ??
+        "randomId";
+
+    // Create a new message
+    MessageModel messageModel = MessageModel(
+      id: messageId,
       senderId: loggedInUser.id,
       senderName: loggedInUser.username,
-      receiverId: receiver.id,
+      receiverId: receiverId,
       message: message,
+      createdAt: DateTime.now(),
     );
+
+    // Add the message to the messages node
+    await _db
+        .ref("messages")
+        .child(conversationId)
+        .child(messageId)
+        .set(messageModel.toJson());
+
+    // Update the conversation in the conversations node
+    Conversation conversation = Conversation(
+      otherName: chatUsers[receiverId]?.username ?? "Unknown",
+      lastMessageId: messageId,
+      lastMessageText: message,
+      unreadCount: 2,
+      lastMessageTime: DateTime.now(),
+    );
+
+    await _db
+        .ref("conversations")
+        .child(conversationId)
+        .update(conversation.toJson());
   }
 }

@@ -1,4 +1,3 @@
-import 'package:advantage/constants/app_color.dart';
 import 'package:advantage/models/ad.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -84,9 +83,7 @@ class AdWidget extends StatelessWidget {
             RichText(
               text: TextSpan(
                 text: "Tags: ",
-                style: const TextStyle(
-                  fontSize: 14,
-                ),
+                style: Get.theme.textTheme.bodyMedium,
                 children: <TextSpan>[
                   if (ad.tags.isNotEmpty) ...[
                     TextSpan(

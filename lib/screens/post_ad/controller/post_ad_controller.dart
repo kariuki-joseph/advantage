@@ -8,9 +8,7 @@ import 'package:advantage/utils/toast_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class PostAdController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -93,6 +91,7 @@ class PostAdController extends GetxController {
       discoveryRadius: double.parse(discoveryRadiusController.text),
       userId: loggedInUser.phone,
       userName: loggedInUser.username,
+      phoneNumber: loggedInUser.phone,
       tags: tags,
     );
 

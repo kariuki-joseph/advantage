@@ -52,7 +52,7 @@ class LocationController extends GetxController {
 
   // function to manually get the live position of a user
   Future<Position> getAndUpdateUserLocation() async {
-    Position position = await _determinePosition();
+    Position position = await Geolocator.getCurrentPosition();
     userLocation.value.latitude = position.latitude;
     userLocation.value.longitude = position.longitude;
     return position;

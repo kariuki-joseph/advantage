@@ -1,7 +1,6 @@
 import 'package:advantage/screens/auth/controllers/auth_controller.dart';
 import 'package:advantage/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
@@ -48,7 +47,7 @@ class _ProfilePageState extends State<ProfilePage>
         const SizedBox(height: 16),
         Center(
           child: Text(
-            "Joseph Karuiki",
+            authController.user.value.username,
             style: theme.textTheme.bodyLarge
                 ?.copyWith(fontWeight: FontWeight.w600),
           ),
@@ -58,18 +57,13 @@ class _ProfilePageState extends State<ProfilePage>
         getSingleSetting(
           iconData: LucideIcons.phone,
           color: CustomTheme.purple,
-          title: "0114662464",
+          title: authController.user.value.phone,
         ),
         getSingleSetting(
             iconData: LucideIcons.mail,
             color: CustomTheme.orange,
-            title: "kariuki.joseph121@gmail.com"),
+            title: authController.user.value.email),
 
-        getSingleSetting(
-          iconData: LucideIcons.userCheck,
-          color: CustomTheme.purple,
-          title: "Type: Seeker",
-        ),
         const SizedBox(height: 32),
         GestureDetector(
           onTap: () {
