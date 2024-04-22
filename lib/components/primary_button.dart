@@ -14,7 +14,7 @@ class PrimaryButton extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 10.0),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
         ),
         onPressed: onPressed,
