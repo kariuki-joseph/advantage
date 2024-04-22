@@ -213,8 +213,9 @@ class HomeTabController extends GetxController {
   }
 
 // start in-app chat with advertiser
-  void startChat(String receiverId) {
-    Get.toNamed(AppRoutes.chat, arguments: receiverId);
+  void startChat(String receiverId, String receiverName) {
+    Get.toNamed(AppRoutes.chat,
+        arguments: {'receiverId': receiverId, 'receiverName': receiverName});
   }
 
   void callUser(String phoneNumber) async {

@@ -55,4 +55,16 @@ class MessageModel {
       'isRead': isRead,
     };
   }
+
+  static MessageModel fromJson(Map<dynamic, dynamic> value) {
+    return MessageModel(
+      id: value['id'] as String,
+      senderId: value['senderId'] as String,
+      senderName: value['senderName'] as String,
+      receiverId: value['receiverId'] as String,
+      message: value['message'] as String,
+      createdAt: DateTime.parse(value['createdAt'] as String),
+      isRead: value['isRead'] as bool,
+    );
+  }
 }

@@ -18,8 +18,8 @@ class HomeTab extends StatefulWidget {
 
 class _HomeTabState extends State<HomeTab> {
   final HomeTabController homeTabController = Get.find<HomeTabController>();
-
   final LocationController locationController = Get.find<LocationController>();
+
   final NotificationController notificationController =
       Get.find<NotificationController>();
 
@@ -133,6 +133,12 @@ class _HomeTabState extends State<HomeTab> {
           ),
         ),
         const SizedBox(height: 5),
+        Obx(
+          () => Text(
+            '${locationController.userLocation.value.latitude},${locationController.userLocation.value.longitude}',
+            style: const TextStyle(fontSize: 8),
+          ),
+        ),
         Center(
           child: Obx(
             () => RichText(
@@ -240,7 +246,8 @@ class _HomeTabState extends State<HomeTab> {
                                           .callUser(ad.phoneNumber);
                                     },
                                     onChat: () {
-                                      homeTabController.startChat(ad.userId);
+                                      homeTabController.startChat(
+                                          ad.userId, ad.userName);
                                     },
                                   );
                                 },

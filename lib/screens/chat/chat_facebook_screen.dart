@@ -9,20 +9,12 @@ import 'package:get/get.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
 class ChatFacebookScreen extends StatefulWidget {
-  final String receiverId = Get.arguments ?? "";
+  final String receiverId = Get.arguments?['receiverId'] ?? "";
+  final String receiverName = Get.arguments?['receiverName'] ?? "";
   ChatFacebookScreen({super.key});
 
   @override
   _ChatFacebookScreenState createState() => _ChatFacebookScreenState();
-}
-
-class ChatPage {
-  String message, from, timestamp, seenType;
-
-  static const String myId = "myId";
-  static const String otherId = "otherId";
-
-  ChatPage(this.message, this.from, this.timestamp, this.seenType);
 }
 
 class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
@@ -41,6 +33,9 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
   @override
   initState() {
     super.initState();
+    // fetch conversations
+    messagesController.fetchMessages(widget.receiverId);
+
     customTheme = CustomTheme.darkCustomTheme;
     _chatTextController = TextEditingController();
     _scrollController = ScrollController();
@@ -98,7 +93,7 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      "ADvantage",
+                      widget.receiverName,
                       style: Get.theme.textTheme.titleLarge?.copyWith(
                         color: theme.colorScheme.onPrimary,
                       ),

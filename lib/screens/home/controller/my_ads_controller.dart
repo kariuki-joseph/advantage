@@ -5,7 +5,6 @@ import 'package:advantage/screens/auth/controllers/auth_controller.dart';
 import 'package:advantage/screens/home/controller/location_controller.dart';
 import 'package:advantage/utils/toast_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 class MyAdsController extends GetxController {
@@ -19,6 +18,7 @@ class MyAdsController extends GetxController {
   @override
   void onInit() async {
     await fetchMyAds();
+    ever(locationController.userLocation, (_) => recalculateDistances());
 
     super.onInit();
   }

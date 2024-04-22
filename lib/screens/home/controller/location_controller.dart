@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:advantage/models/lat_lng.dart';
+import 'package:advantage/utils/toast_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,7 +10,7 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class LocationController extends GetxController {
-  final Rx<LatLng> userLocation = Rx<LatLng>(LatLng((0.0), 0.0));
+  final Rx<LatLng> userLocation = Rx<LatLng>(LatLng(0.0, 0.0));
   StreamSubscription<Position>? _positionStreamSubscription;
   final LocationSettings locationSettings = const LocationSettings(
     accuracy: LocationAccuracy.high,
@@ -29,7 +30,6 @@ class LocationController extends GetxController {
         // print user location
         debugPrint(
             "Current Location: ${userLocation.value.latitude}, ${userLocation.value.longitude}");
-        Fluttertoast.showToast(msg: "Location Updated");
         //  update user geopoint
         userGeoPoint =
             GeoPoint(userLocation.value.latitude, userLocation.value.longitude);

@@ -2,6 +2,7 @@ import 'package:advantage/screens/home/controller/location_controller.dart';
 import 'package:advantage/screens/update_ad/controller/controller/update_ad_controller.dart';
 import 'package:advantage/widgets/my_btn_loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class UpdateAd extends StatelessWidget {
@@ -29,7 +30,7 @@ class UpdateAd extends StatelessWidget {
             child: Form(
               key: controller.formKey,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 10),
                   TextFormField(
@@ -57,7 +58,7 @@ class UpdateAd extends StatelessWidget {
                     ),
                     textAlign: TextAlign.start,
                     keyboardType: TextInputType.multiline,
-                    maxLines: 4,
+                    maxLines: 3,
                     controller: controller.descriptionController,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -66,10 +67,73 @@ class UpdateAd extends StatelessWidget {
                       return null;
                     },
                   ),
+                  const SizedBox(height: 16),
+                  const Text(
+                      "Tags are keywords that will help users find your ad."),
+                  const SizedBox(height: 12),
+                  Obx(
+                    () => TextFormField(
+                      controller: controller.tagsController,
+                      enabled: controller.tags.length < controller.maxTags,
+                      maxLength: 15,
+                      // do not allow spaces
+                      inputFormatters: [
+                        FilteringTextInputFormatter.deny(RegExp(r"\s")),
+                      ],
+                      onFieldSubmitted: (value) {
+                        controller.addTag();
+                      },
+                      decoration: InputDecoration(
+                        prefix: const Padding(
+                          padding: EdgeInsets.only(right: 5.0),
+                          child: Text("#"),
+                        ),
+                        hintText: "Tag",
+                        border: const OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            controller.addTag();
+                          },
+                          icon: const Icon(
+                            Icons.add_circle_outlined,
+                            size: 32,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Obx(
+                    () => Text(
+                        "Tags added: ${controller.tags.length}/${controller.maxTags}"),
+                  ),
                   const SizedBox(height: 10),
+                  Obx(
+                    () => Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: controller.tags
+                          .map(
+                            (tag) => GestureDetector(
+                              onTap: () {
+                                // add the tag to the text field
+                                controller.tagsController.text = tag;
+                                controller.tags.remove(tag);
+                              },
+                              child: Chip(
+                                label: Text(tag),
+                                onDeleted: () {
+                                  controller.tags.remove(tag);
+                                },
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   const Text(
                       "Discovery radius is the radius within which your ad will be visible to other users."),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
                   TextFormField(
                     decoration: const InputDecoration(
                       labelText: "Discovery Radius (Metres)",
@@ -91,7 +155,11 @@ class UpdateAd extends StatelessWidget {
                       label: Text(
                         controller.isLocationSelected.value
                             ? "Location Added"
-                            : "Add location",
+                            : controller.isLocationLoading.value
+                                ? "Getting location..."
+                                : controller.locationError.value
+                                    ? "Error getting location"
+                                    : "Add location",
                       ),
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 50),
@@ -104,21 +172,23 @@ class UpdateAd extends StatelessWidget {
                       ),
                       icon: controller.isLocationLoading.value
                           ? const MyBtnLoader()
-                          : controller.isLocationSelected.value
-                              ? const Icon(
-                                  Icons.check_circle_outline,
-                                )
-                              : const Icon(
-                                  Icons.add_location_alt_outlined,
-                                ),
+                          : Icon(
+                              controller.isLocationSelected.value
+                                  ? Icons.check_circle_outline
+                                  : Icons.add_location_alt_outlined,
+                            ),
                       onPressed: () {
                         controller.getLocation();
                       },
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Obx(() => Text(
-                      "Location: ${controller.lat.value}, ${controller.lng.value}")),
+                  Obx(
+                    () => Center(
+                      child: Text(
+                          "Location: ${controller.lat.value}, ${controller.lng.value}"),
+                    ),
+                  ),
                   const SizedBox(height: 16),
                   Obx(
                     () => ElevatedButton(

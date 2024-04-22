@@ -94,12 +94,12 @@ class MessagesController extends GetxController {
     }
 
     // Generate a new message ID
-    String? messageId = _db
+    String messageId = _db
             .ref("messages")
             .child(conversationId.isNotEmpty ? conversationId : "temp")
             .push()
             .key ??
-        "randomId";
+        "defaultMessageId";
 
     // Create a new message
     MessageModel messageModel = MessageModel(
@@ -112,11 +112,9 @@ class MessagesController extends GetxController {
     );
 
     // Add the message to the messages node
-    await _db
-        .ref("messages")
-        .child(conversationId)
-        .child(messageId)
-        .set(messageModel.toJson());
+    String path = "messages/$conversationId/$messageId";
+    debugPrint('Path: $path');
+    await _db.ref().child(path).set(messageModel.toJson());
 
     // Update the conversation in the conversations node
     Conversation conversation = Conversation(
@@ -131,5 +129,47 @@ class MessagesController extends GetxController {
         .ref("conversations")
         .child(conversationId)
         .update(conversation.toJson());
+  }
+
+  // fetch messages from the database for this receiver id
+  void fetchMessages(String receiverId) async {
+    userMessages.clear();
+
+    // Determine the conversation ID
+    String conversationId;
+    if (loggedInUser.id.compareTo(receiverId) < 0) {
+      conversationId = '${loggedInUser.id}-$receiverId';
+    } else {
+      conversationId = '$receiverId-${loggedInUser.id}';
+    }
+
+    // get messages from the database and create MessagModel instances which will be set in userMessages
+    // The listener should be only once
+    _db.ref("messages").child(conversationId).onValue.listen((event) {
+      DataSnapshot snapshot = event.snapshot;
+
+      if (snapshot.value == null) {
+        return;
+      }
+
+      _db.ref("messages").child(conversationId).onValue.listen((event) {
+        DataSnapshot snapshot = event.snapshot;
+        if (snapshot.value == null) {
+          return;
+        }
+
+        Map<dynamic, dynamic> messages =
+            snapshot.value as Map<dynamic, dynamic>;
+
+        // Convert each message to a MessageModel
+        List<MessageModel> messageModels = messages.entries.map((entry) {
+          MessageModel messageModel =
+              MessageModel.fromJson(entry.value as Map<dynamic, dynamic>);
+          return messageModel;
+        }).toList();
+
+        userMessages.assignAll(messageModels);
+      });
+    });
   }
 }
