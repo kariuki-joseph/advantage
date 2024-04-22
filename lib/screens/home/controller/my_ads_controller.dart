@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:advantage/models/ad.dart';
 import 'package:advantage/screens/auth/controllers/auth_controller.dart';
+import 'package:advantage/screens/home/controller/location_controller.dart';
 import 'package:advantage/utils/toast_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
@@ -13,15 +14,7 @@ class MyAdsController extends GetxController {
   final AuthController authController = Get.put(AuthController());
   final isLoading = false.obs;
   final loggedInUser = Get.find<AuthController>().user.value;
-
-  // initial location around DeKUT
-  final myLat = (-0.3981185).obs;
-  final myLng = 36.9612208.obs;
-
-  final LocationSettings locationSettings = const LocationSettings(
-    accuracy: LocationAccuracy.high,
-    distanceFilter: 2, // notify me when I move 2 meters
-  );
+  final LocationController locationController = Get.find<LocationController>();
 
   @override
   void onInit() async {
@@ -44,6 +37,7 @@ class MyAdsController extends GetxController {
           .get();
       if (snapshot.docs.isNotEmpty) {
         myAds.value = Ad.fromQuerySnapshot(snapshot);
+        recalculateDistances();
       }
     } catch (e) {
       showErrorToast(e.toString());
@@ -70,21 +64,11 @@ class MyAdsController extends GetxController {
   void recalculateDistances() {
     // update visibility of ads based on the geofence radius
     for (var ad in myAds) {
-      double distance = getDistance(ad.lat, ad.lng);
+      double distance = locationController.getDistance(ad.lat, ad.lng);
       ad.distance = distance;
-      ad.isVisible = distance <= ad.discoveryRadius;
     }
 
     // sort in ascending order of distance
     myAds.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-  }
-
-  // geting the distance between two points
-  double getDistance(double lat1, double lng1) {
-    double lat2 = myLat.value;
-    double lng2 = myLng.value;
-    double distanceInMeters =
-        Geolocator.distanceBetween(lat1, lng1, lat2, lng2);
-    return distanceInMeters;
   }
 }

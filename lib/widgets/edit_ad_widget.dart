@@ -83,6 +83,34 @@ class EditAdWidget extends StatelessWidget {
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 10),
+            const SizedBox(
+              height: 10,
+            ),
+            RichText(
+              text: TextSpan(
+                text: "Tags: ",
+                style: Get.theme.textTheme.bodyMedium,
+                children: <TextSpan>[
+                  if (ad.tags.isNotEmpty) ...[
+                    TextSpan(
+                      text: '#',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    TextSpan(
+                      text: "${ad.tags.join("#, ")} ",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+
             // text and call icons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,

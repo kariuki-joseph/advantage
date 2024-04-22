@@ -61,15 +61,15 @@ class MyAdsTab extends StatelessWidget {
                                 () => ListView.builder(
                                   itemCount: controller.myAds.length,
                                   itemBuilder: (context, index) {
-                                    Ad ad = controller.myAds[index];
-
                                     return EditAdWidget(
-                                      ad: ad,
+                                      ad: controller.myAds[index],
                                       onDeleteAd: () {
-                                        showConfirmDeleteDialog(context, ad);
+                                        showConfirmDeleteDialog(
+                                            context, controller.myAds[index]);
                                       },
                                       onEditAd: () {
-                                        updateAdController.setAdToUpdate(ad);
+                                        updateAdController.setAdToUpdate(
+                                            controller.myAds[index]);
                                         Get.toNamed(AppRoutes.updateAd);
                                       },
                                     );

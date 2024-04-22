@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:advantage/models/lat_lng.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -28,6 +29,7 @@ class LocationController extends GetxController {
         // print user location
         debugPrint(
             "Current Location: ${userLocation.value.latitude}, ${userLocation.value.longitude}");
+        Fluttertoast.showToast(msg: "Location Updated");
         //  update user geopoint
         userGeoPoint =
             GeoPoint(userLocation.value.latitude, userLocation.value.longitude);

@@ -32,6 +32,9 @@ class HomeTabController extends GetxController {
   final RxList<Ad> ads = RxList<Ad>([]);
   final isLoading = false.obs;
 
+  // observe is user is moving
+  final isMoving = false.obs;
+
   final geo = GeoFlutterFire();
 
   @override
@@ -59,10 +62,7 @@ class HomeTabController extends GetxController {
     Subscription subscription =
         Subscription(userId: loggedInUser.id, keyword: keyword, id: subId);
     // add subscription to this keyword
-    await _firestore
-        .collection("subscriptions")
-        .doc(subId)
-        .set(subscription.toMap());
+    _firestore.collection("subscriptions").doc(subId).set(subscription.toMap());
     subscriptions.add(subscription);
     searchController.text = "";
   }
@@ -107,7 +107,7 @@ class HomeTabController extends GetxController {
     ads.sort((a, b) => a.distance.compareTo(b.distance));
   }
 
-  // fetching ads from firebase using geopoints
+  // fetching ads from firebase using calculated geopoint
   Future<void> fetchAds() async {
     isLoading.value = true;
     // create a geofence collection reference
@@ -148,6 +148,10 @@ class HomeTabController extends GetxController {
   Future<void> getAdsWithRadius(bool auto) async {
     if (auto) {
       Fluttertoast.showToast(msg: "Recalculating...");
+      isMoving.value = true;
+      Future.delayed(const Duration(seconds: 3), () {
+        isMoving.value = false;
+      });
     }
     isLoading.value = true;
     try {

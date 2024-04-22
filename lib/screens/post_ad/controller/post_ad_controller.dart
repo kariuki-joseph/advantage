@@ -50,6 +50,7 @@ class PostAdController extends GetxController {
 
   Future<void> getLocation() async {
     isLocationLoading.value = true;
+    isLocationSelected.value = false;
     try {
       await locationController.getAndUpdateUserLocation();
     } on Exception catch (e) {
@@ -57,6 +58,7 @@ class PostAdController extends GetxController {
       Fluttertoast.showToast(msg: e.toString());
     } finally {
       isLocationLoading.value = false;
+      isLocationSelected.value = true;
     }
   }
 
