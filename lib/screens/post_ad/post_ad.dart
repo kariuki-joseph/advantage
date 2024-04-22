@@ -1,3 +1,4 @@
+import 'package:advantage/components/primary_button.dart';
 import 'package:advantage/screens/post_ad/controller/post_ad_controller.dart';
 import 'package:advantage/widgets/my_btn_loader.dart';
 import 'package:flutter/material.dart';
@@ -182,12 +183,7 @@ class PostAd extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Obx(
-                    () => ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 50),
-                        backgroundColor: Get.theme.colorScheme.primary,
-                        foregroundColor: Get.theme.colorScheme.onPrimary,
-                      ),
+                    () => PrimaryButton(
                       onPressed: () {
                         controller.postAd();
                       },

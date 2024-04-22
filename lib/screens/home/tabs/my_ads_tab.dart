@@ -1,3 +1,4 @@
+import 'package:advantage/components/primary_button.dart';
 import 'package:advantage/models/ad.dart';
 import 'package:advantage/routes/app_routes.dart';
 import 'package:advantage/screens/home/controller/my_ads_controller.dart';
@@ -25,16 +26,11 @@ class MyAdsTab extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: OutlinedButton.icon(
+                child: PrimaryButton.icon(
                   onPressed: () {
                     Get.toNamed(AppRoutes.postAd);
                   },
                   icon: const Icon(Icons.add),
-                  style: OutlinedButton.styleFrom(
-                    backgroundColor: Get.theme.colorScheme.primary,
-                    foregroundColor: Get.theme.colorScheme.onPrimary,
-                    side: BorderSide.none,
-                  ),
                   label: const Text("Post New Ad"),
                 ),
               ),

@@ -14,11 +14,30 @@ class PrimaryButton extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 10.0),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-          foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          foregroundColor: Theme.of(context).colorScheme.onPrimary,
         ),
         onPressed: onPressed,
         child: child ?? const Text(""),
+      ),
+    );
+  }
+
+  /// create PrimaryButton with icon
+  factory PrimaryButton.icon({
+    required VoidCallback onPressed,
+    required Widget icon,
+    required Widget label,
+  }) {
+    return PrimaryButton(
+      onPressed: onPressed,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          icon,
+          const SizedBox(width: 10),
+          label,
+        ],
       ),
     );
   }

@@ -1,4 +1,3 @@
-import 'package:advantage/controllers/my_page_controller.dart';
 import 'package:advantage/models/ad.dart';
 import 'package:advantage/routes/app_routes.dart';
 import 'package:advantage/screens/home/controller/home_tab_controller.dart';
@@ -83,7 +82,7 @@ class _HomeTabState extends State<HomeTab> {
                         child: Container(
                           padding: const EdgeInsets.all(1),
                           decoration: BoxDecoration(
-                            color: Get.theme.colorScheme.primary,
+                            color: Get.theme.colorScheme.primaryContainer,
                             borderRadius: BorderRadius.circular(6),
                           ),
                           constraints: const BoxConstraints(
@@ -93,8 +92,8 @@ class _HomeTabState extends State<HomeTab> {
                           child: Text(
                             notificationController.unreadNotifications.value
                                 .toString(),
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: Get.theme.colorScheme.onPrimaryContainer,
                               fontSize: 8,
                             ),
                             textAlign: TextAlign.center,

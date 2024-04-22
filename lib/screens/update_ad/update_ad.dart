@@ -1,3 +1,4 @@
+import 'package:advantage/components/primary_button.dart';
 import 'package:advantage/screens/home/controller/location_controller.dart';
 import 'package:advantage/screens/update_ad/controller/controller/update_ad_controller.dart';
 import 'package:advantage/widgets/my_btn_loader.dart';
@@ -191,12 +192,7 @@ class UpdateAd extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Obx(
-                    () => ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 50),
-                        backgroundColor: Get.theme.colorScheme.primary,
-                        foregroundColor: Get.theme.colorScheme.onPrimary,
-                      ),
+                    () => PrimaryButton(
                       onPressed: () {
                         controller.updateAd();
                       },
