@@ -1,3 +1,4 @@
+import 'package:advantage/controllers/my_page_controller.dart';
 import 'package:advantage/models/ad.dart';
 import 'package:advantage/routes/app_routes.dart';
 import 'package:advantage/screens/home/controller/home_tab_controller.dart';
@@ -19,7 +20,6 @@ class HomeTab extends StatefulWidget {
 class _HomeTabState extends State<HomeTab> {
   final HomeTabController homeTabController = Get.find<HomeTabController>();
   final LocationController locationController = Get.find<LocationController>();
-
   final NotificationController notificationController =
       Get.find<NotificationController>();
 

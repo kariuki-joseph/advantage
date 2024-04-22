@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 class HomePageController extends GetxController {
   // initial location around DeKUT
   final LocationController locationController = Get.find<LocationController>();
+
   @override
   void onInit() {
     // get ads from firebase

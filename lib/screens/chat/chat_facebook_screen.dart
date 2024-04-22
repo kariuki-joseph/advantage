@@ -9,9 +9,7 @@ import 'package:get/get.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
 class ChatFacebookScreen extends StatefulWidget {
-  final String receiverId = Get.arguments?['receiverId'] ?? "";
-  final String receiverName = Get.arguments?['receiverName'] ?? "";
-  ChatFacebookScreen({super.key});
+  const ChatFacebookScreen({super.key});
 
   @override
   _ChatFacebookScreenState createState() => _ChatFacebookScreenState();
@@ -34,7 +32,7 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
   initState() {
     super.initState();
     // fetch conversations
-    messagesController.fetchMessages(widget.receiverId);
+    messagesController.fetchMessages();
 
     customTheme = CustomTheme.darkCustomTheme;
     _chatTextController = TextEditingController();
@@ -68,7 +66,7 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                     ),
                   ),
                   onTap: () {
-                    Navigator.of(context).pop();
+                    messagesController.showChat.value = false;
                   },
                 ),
               ),
@@ -92,10 +90,12 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                      widget.receiverName,
-                      style: Get.theme.textTheme.titleLarge?.copyWith(
-                        color: theme.colorScheme.onPrimary,
+                    Obx(
+                      () => Text(
+                        messagesController.receiverName.value,
+                        style: Get.theme.textTheme.titleLarge?.copyWith(
+                          color: theme.colorScheme.onPrimary,
+                        ),
                       ),
                     ),
                     Text(
@@ -301,16 +301,17 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
                                 splashColor: Colors.white,
                                 // inkwell color
                                 child: SizedBox(
-                                    width: 42,
-                                    height: 42,
-                                    child: Container(
-                                      margin: const EdgeInsets.only(left: 4),
-                                      child: Icon(
-                                        LucideIcons.send,
-                                        size: 22,
-                                        color: customChatTheme.btnColor,
-                                      ),
-                                    )),
+                                  width: 42,
+                                  height: 42,
+                                  child: Container(
+                                    margin: const EdgeInsets.only(left: 4),
+                                    child: Icon(
+                                      LucideIcons.send,
+                                      size: 22,
+                                      color: customChatTheme.btnColor,
+                                    ),
+                                  ),
+                                ),
                                 onTap: () {
                                   sendMessage(_chatTextController!.text);
                                 },
@@ -529,7 +530,7 @@ class _ChatFacebookScreenState extends State<ChatFacebookScreen> {
 
   void sendMessage(String message) {
     if (message.isNotEmpty) {
-      messagesController.sendMessage(message, widget.receiverId);
+      messagesController.sendMessage(message);
       _chatTextController!.clear();
     }
   }

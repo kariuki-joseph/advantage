@@ -1,6 +1,8 @@
+import 'package:advantage/controllers/my_page_controller.dart';
+import 'package:advantage/enums/tab_index.dart';
 import 'package:advantage/screens/home/controller/home_page_controller.dart';
 import 'package:advantage/screens/home/tabs/home_tab.dart';
-import 'package:advantage/screens/home/tabs/message_tab.dart';
+import 'package:advantage/screens/home/tabs/messages_tab.dart';
 import 'package:advantage/screens/home/tabs/my_ads_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,8 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final HomePageController controller = Get.find();
-  int _currentIndex = 0;
-  final _pageController = PageController();
+  final MyPageController myPageController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -24,42 +25,35 @@ class _HomePageState extends State<HomePage> {
         body: Padding(
           padding: const EdgeInsets.all(16),
           child: PageView(
-            controller: _pageController,
+            controller: myPageController.pageController,
             children: [
               const HomeTab(),
               MyAdsTab(),
               MessagesTab(),
             ],
-            onPageChanged: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
+            onPageChanged: (index) =>
+                myPageController.currentIndex.value = TabIndex.values[index],
           ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "Home",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_view_day),
-              label: "My Ads",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.chat_bubble_outline),
-              label: "Message",
-            )
-          ],
-          onTap: (index) {
-            _pageController.animateToPage(
-              index,
-              duration: const Duration(milliseconds: 100),
-              curve: Curves.easeIn,
-            );
-          },
+        bottomNavigationBar: Obx(
+          () => BottomNavigationBar(
+              currentIndex: myPageController.currentIndex.value.index,
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: "Home",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.calendar_view_day),
+                  label: "My Ads",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.chat_bubble_outline),
+                  label: "Message",
+                )
+              ],
+              onTap: (index) =>
+                  myPageController.setCurrentPage(TabIndex.values[index])),
         ),
       ),
     );

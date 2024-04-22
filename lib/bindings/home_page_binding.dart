@@ -1,3 +1,4 @@
+import 'package:advantage/controllers/my_page_controller.dart';
 import 'package:advantage/screens/home/controller/home_page_controller.dart';
 import 'package:advantage/screens/home/controller/home_tab_controller.dart';
 import 'package:advantage/screens/home/controller/messages_controller.dart';
@@ -11,5 +12,6 @@ class HomePageBinding extends Bindings {
     Get.lazyPut(() => HomeTabController());
     Get.lazyPut(() => NotificationController());
     Get.lazyPut(() => MessagesController());
+    Get.lazyPut(() => MyPageController());
   }
 }

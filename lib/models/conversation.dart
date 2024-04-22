@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 
 class Conversation {
   String otherName; // name of the other party
+  String otherId; // id of the other party
   String lastMessageId;
   String lastMessageText;
   int unreadCount;
@@ -9,6 +10,7 @@ class Conversation {
 
   Conversation({
     required this.otherName,
+    required this.otherId,
     required this.lastMessageId,
     required this.lastMessageText,
     required this.unreadCount,
@@ -19,6 +21,7 @@ class Conversation {
   Map<String, dynamic> toJson() {
     return {
       'senderName': otherName,
+      'senderId': otherId,
       'lastMessageId': lastMessageId,
       'lastMessageText': lastMessageText,
       'unreadCount': unreadCount,
@@ -36,6 +39,7 @@ class Conversation {
 
     return Conversation(
       otherName: dataMap['senderName'] as String,
+      otherId: dataMap['senderId'] as String,
       lastMessageId: dataMap['lastMessageId'] as String,
       lastMessageText: dataMap['lastMessageText'] as String,
       unreadCount: dataMap['unreadCount'] as int,

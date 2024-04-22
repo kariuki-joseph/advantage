@@ -1,12 +1,14 @@
 import 'dart:async';
 
+import 'package:advantage/controllers/my_page_controller.dart';
+import 'package:advantage/enums/tab_index.dart';
 import 'package:advantage/models/ad.dart';
 import 'package:advantage/models/notification_model.dart';
 import 'package:advantage/models/subscription.dart';
 import 'package:advantage/models/user_model.dart';
-import 'package:advantage/routes/app_routes.dart';
 import 'package:advantage/screens/auth/controllers/auth_controller.dart';
 import 'package:advantage/screens/home/controller/location_controller.dart';
+import 'package:advantage/screens/home/controller/messages_controller.dart';
 import 'package:advantage/screens/notifications/controllers/notifications_controller.dart';
 import 'package:advantage/utils/toast_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,6 +25,8 @@ class HomeTabController extends GetxController {
   final ScrollController scrollController = ScrollController();
   final UserModel loggedInUser = Get.find<AuthController>().user.value;
   final LocationController locationController = Get.find<LocationController>();
+  final MessagesController messagesController = Get.find();
+  final MyPageController pageController = Get.find();
   final NotificationController notificationController =
       Get.find<NotificationController>();
 
@@ -41,15 +45,13 @@ class HomeTabController extends GetxController {
   void onInit() async {
     super.onInit();
 
-    // listen to changes in user location and recalculate distances
     ever(locationController.userLocation, (_) => getAdsWithRadius(true));
-    // listen to changes in the search radius of the user and get ads within the radius
     ever(locationController.searchRadius, (_) => getAdsWithRadius(false));
 
     locationController.initConfig();
     locationController.getAndUpdateUserLocation();
     debugPrint("Ater finishing getting locatio upates");
-    // get user's subscriptions
+
     await fetchSubscriptions();
     await getAdsWithRadius(false);
     // check user's notifications
@@ -99,8 +101,8 @@ class HomeTabController extends GetxController {
     for (var ad in ads) {
       double distance = locationController.getDistance(ad.lat, ad.lng);
       ad.distance = distance;
-      ad.isVisible = distance <=
-          ad.discoveryRadius + locationController.searchRadius.value;
+      //ad.isVisible = distance <=
+      //    ad.discoveryRadius + locationController.searchRadius.value;
     }
 
     // sort in ascending order of distance
@@ -214,8 +216,10 @@ class HomeTabController extends GetxController {
 
 // start in-app chat with advertiser
   void startChat(String receiverId, String receiverName) {
-    Get.toNamed(AppRoutes.chat,
-        arguments: {'receiverId': receiverId, 'receiverName': receiverName});
+    messagesController.receiverId.value = receiverId;
+    messagesController.receiverName.value = receiverName;
+    pageController.setCurrentPage(TabIndex.messages);
+    messagesController.showChat.value = true;
   }
 
   void callUser(String phoneNumber) async {
