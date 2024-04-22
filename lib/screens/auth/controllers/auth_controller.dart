@@ -161,4 +161,12 @@ class AuthController extends GetxController {
         .doc(user.value.phone)
         .update(user.value.toMap());
   }
+
+  // logout
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+    user.value = UserModel();
+    Get.offAllNamed(AppRoutes.phoneLogin);
+  }
 }

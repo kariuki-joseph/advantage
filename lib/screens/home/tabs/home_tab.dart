@@ -2,6 +2,7 @@ import 'package:advantage/models/ad.dart';
 import 'package:advantage/routes/app_routes.dart';
 import 'package:advantage/screens/home/controller/home_tab_controller.dart';
 import 'package:advantage/screens/home/controller/location_controller.dart';
+import 'package:advantage/screens/notifications/controllers/notifications_controller.dart';
 import 'package:advantage/widgets/ad_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,8 +18,10 @@ class HomeTab extends StatefulWidget {
 
 class _HomeTabState extends State<HomeTab> {
   final HomeTabController homeTabController = Get.find<HomeTabController>();
-
   final LocationController locationController = Get.find<LocationController>();
+
+  final NotificationController notificationController =
+      Get.find<NotificationController>();
 
   final FocusNode searchFocusNode = FocusNode();
 
@@ -33,8 +36,11 @@ class _HomeTabState extends State<HomeTab> {
               child: SearchBar(
                 controller: homeTabController.searchController,
                 focusNode: searchFocusNode,
+                hintText: 'Search',
                 leading: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.toNamed(AppRoutes.profile);
+                  },
                   icon: const Icon(Icons.account_circle, size: 40),
                 ),
                 trailing: searchFocusNode.hasFocus
@@ -61,9 +67,43 @@ class _HomeTabState extends State<HomeTab> {
               onPressed: () {
                 Get.toNamed(AppRoutes.notifications);
               },
-              icon: const Icon(
-                Icons.notifications_outlined,
-                size: 32,
+              icon: Stack(
+                children: <Widget>[
+                  const Icon(
+                    Icons.notifications_outlined,
+                    size: 32,
+                  ),
+                  Obx(
+                    () => Visibility(
+                      visible:
+                          notificationController.unreadNotifications.value > 0,
+                      child: Positioned(
+                        bottom: 5,
+                        right: 3,
+                        child: Container(
+                          padding: const EdgeInsets.all(1),
+                          decoration: BoxDecoration(
+                            color: Get.theme.colorScheme.primary,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 15,
+                            minHeight: 12,
+                          ),
+                          child: Text(
+                            notificationController.unreadNotifications.value
+                                .toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 8,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -72,7 +112,7 @@ class _HomeTabState extends State<HomeTab> {
         // cancellable selection chips
         Obx(
           () => SizedBox(
-            height: 50,
+            height: homeTabController.subscriptions.isEmpty ? 0 : 50,
             child: ListView(
               scrollDirection: Axis.horizontal,
               controller: homeTabController.scrollController,
@@ -92,36 +132,85 @@ class _HomeTabState extends State<HomeTab> {
             ),
           ),
         ),
+        const SizedBox(height: 5),
+        Obx(
+          () => Text(
+            '${locationController.userLocation.value.latitude},${locationController.userLocation.value.longitude}',
+            style: const TextStyle(fontSize: 8),
+          ),
+        ),
+        Center(
+          child: Obx(
+            () => RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'Search Radius: ',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  TextSpan(
+                    text:
+                        '${homeTabController.rangeValues.value.end.round()} m',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Get.theme.colorScheme.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
         Row(
           children: [
             Expanded(
               child: Obx(
-                () => RangeSlider(
-                  values: homeTabController.rangeValues.value,
-                  onChanged: (RangeValues values) {
-                    homeTabController.rangeValues.value = values;
-                  },
-                  min: 0,
-                  max: 100,
-                  divisions: 100,
-                  labels: RangeLabels(
-                    homeTabController.rangeValues.value.start
-                        .round()
-                        .toString(),
-                    homeTabController.rangeValues.value.end.round().toString(),
+                () => SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    showValueIndicator: ShowValueIndicator.always,
+                  ),
+                  child: RangeSlider(
+                    values: homeTabController.rangeValues.value,
+                    onChangeEnd: (RangeValues values) {
+                      // update the search radius
+                      locationController.searchRadius.value =
+                          values.end - values.start + 1;
+                    },
+                    onChanged: (RangeValues values) {
+                      final newValues = RangeValues(
+                        homeTabController.rangeValues.value
+                            .start, // Keep the start value constant
+                        values.end, // Only update the end value
+                      );
+                      if (newValues.start <= newValues.end) {
+                        homeTabController.rangeValues.value = newValues;
+                      }
+                    },
+                    min: 0,
+                    max: 1000,
+                    divisions: 200,
+                    labels: RangeLabels(
+                      homeTabController.rangeValues.value.start
+                          .round()
+                          .toString(),
+                      homeTabController.rangeValues.value.end
+                          .round()
+                          .toString(),
+                    ),
                   ),
                 ),
               ),
             ),
           ],
         ),
-        const Center(child: Text("Adjust Search Radius")),
+
         const SizedBox(height: 10),
         // Body
         Expanded(
           child: Obx(
             () {
               if (homeTabController.ads.isEmpty &&
+                      homeTabController.isLoading.value ||
                   homeTabController.isLoading.value) {
                 return const Center(child: CircularProgressIndicator());
               } else {
@@ -131,16 +220,38 @@ class _HomeTabState extends State<HomeTab> {
                     return Obx(
                       () => RefreshIndicator(
                         onRefresh: () async {
-                          await homeTabController.fetchAds();
-                          locationController.updateLiveLocation();
+                          await homeTabController.getAdsWithRadius(false);
+                          locationController.getAndUpdateUserLocation();
                         },
-                        child: ListView.builder(
-                          itemCount: homeTabController.ads.length,
-                          itemBuilder: (context, index) {
-                            Ad ad = homeTabController.ads[index];
-                            return AdWidget(ad: ad);
-                          },
-                        ),
+                        child: homeTabController.ads
+                                .where((ad) => ad.isVisible)
+                                .isEmpty
+                            ? const Center(
+                                child: Text(
+                                  "There are no ads currently in your sorrounding. Try moving to a new place or adjust your search radius",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              )
+                            : ListView.builder(
+                                itemCount: homeTabController.ads.length,
+                                itemBuilder: (context, index) {
+                                  Ad ad = homeTabController.ads[index];
+                                  if (!ad.isVisible) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  return AdWidget(
+                                    ad: ad,
+                                    onCall: () {
+                                      homeTabController
+                                          .callUser(ad.phoneNumber);
+                                    },
+                                    onChat: () {
+                                      homeTabController.startChat(
+                                          ad.userId, ad.userName);
+                                    },
+                                  );
+                                },
+                              ),
                       ),
                     );
                   },

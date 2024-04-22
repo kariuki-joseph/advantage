@@ -3,20 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class AdWidget extends StatelessWidget {
+class EditAdWidget extends StatelessWidget {
+  final Function()? onDeleteAd;
+  final Function()? onEditAd;
   final Ad ad;
-  final Function() onChat;
-  final Function() onCall;
-  const AdWidget({
+
+  const EditAdWidget({
     super.key,
     required this.ad,
-    required this.onChat,
-    required this.onCall,
+    required this.onDeleteAd,
+    required this.onEditAd,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
         side: const BorderSide(
@@ -42,25 +44,28 @@ class AdWidget extends StatelessWidget {
                   Icon(
                     Icons.access_time,
                     size: 16,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Get.theme.colorScheme.primary,
                   ),
                   const SizedBox(width: 5),
                   Text(
-                    timeago.format(ad.createdAt, locale: 'en_short'),
-                    style: const TextStyle(
-                      fontSize: 11,
-                    ),
+                    timeago.format(ad.createdAt),
+                    style: const TextStyle(fontSize: 11),
                   ),
-                  const SizedBox(
-                    width: 20,
-                  ),
+                  const SizedBox(width: 10),
                   Icon(
                     Icons.directions_run,
                     size: 16,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Get.theme.colorScheme.primary,
                   ),
                   Text(
                     "${ad.distance.toStringAsFixed(2)}m",
+                    style: const TextStyle(fontSize: 11),
+                  ),
+                  const SizedBox(width: 10),
+                  Image.asset("images/geofence_radius.png"),
+                  const SizedBox(width: 5),
+                  Text(
+                    "${ad.discoveryRadius.toStringAsFixed(2)}m",
                     style: const TextStyle(fontSize: 11),
                   )
                 ],
@@ -77,6 +82,7 @@ class AdWidget extends StatelessWidget {
               ad.description,
               style: const TextStyle(fontSize: 16),
             ),
+            const SizedBox(height: 10),
             const SizedBox(
               height: 10,
             ),
@@ -104,26 +110,34 @@ class AdWidget extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 10),
+
             // text and call icons
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 OutlinedButton.icon(
-                  onPressed: onChat,
-                  icon: const Icon(Icons.chat_bubble_outline),
-                  label: const Text("Chat"),
+                  onPressed: onDeleteAd,
+                  icon: const Icon(Icons.delete_outlined),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(
+                      color: Get.theme.colorScheme.error,
+                    ),
+                    backgroundColor: Get.theme.colorScheme.onError,
+                    foregroundColor: Get.theme.colorScheme.error,
+                  ),
+                  label: const Text("Delete"),
                 ),
                 const SizedBox(width: 10),
                 OutlinedButton.icon(
-                  onPressed: onCall,
-                  icon: const Icon(Icons.call),
-                  label: const Text("Call"),
+                  onPressed: onEditAd,
+                  icon: const Icon(Icons.edit),
+                  label: const Text("Edit"),
                   style: OutlinedButton.styleFrom(
+                    side: BorderSide.none,
                     backgroundColor: Get.theme.colorScheme.primary,
                     foregroundColor: Get.theme.colorScheme.onPrimary,
                   ),
-                )
+                ),
               ],
             )
           ],

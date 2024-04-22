@@ -11,6 +11,7 @@ class AuthMiddleware extends GetMiddleware {
   RouteSettings? redirect(String? route) {
     // check if user is authenticated
     // redirect to login if user is not logged in
+    debugPrint("Checking if user is logged in");
     final AuthController authController = Get.find<AuthController>();
     if (!authController.isLoggedIn) {
       return const RouteSettings(name: AppRoutes.pinLogin);

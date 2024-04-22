@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geoflutterfire2/geoflutterfire2.dart';
 
 class Ad {
   String id;
@@ -8,6 +9,7 @@ class Ad {
   double lat, lng;
   String userId;
   String userName;
+  String phoneNumber = '';
   DateTime createdAt;
   double distance = 0.0;
   double discoveryRadius;
@@ -18,6 +20,7 @@ class Ad {
     required this.title,
     required this.description,
     this.tags = const [],
+    this.phoneNumber = '',
     required this.lat,
     required this.lng,
     required this.discoveryRadius,
@@ -26,7 +29,9 @@ class Ad {
     required this.createdAt,
   });
 
-  GeoPoint get location => GeoPoint(lat, lng);
+  GeoPoint get location {
+    return GeoPoint(lat, lng);
+  }
 
   // hashmap to save to firebase
   Map<String, dynamic> toMap() {
@@ -37,11 +42,12 @@ class Ad {
       'tags': tags,
       'lat': lat,
       'lng': lng,
-      'location': GeoPoint(lat, lng),
+      'location': GeoFirePoint(location.latitude, location.longitude).data,
       'discoveryRadius': discoveryRadius,
       'userId': userId,
       'userName': userName,
-      'postDate': createdAt,
+      'phoneNumber': phoneNumber,
+      'createdAt': createdAt,
     };
   }
 
@@ -57,12 +63,26 @@ class Ad {
       discoveryRadius: snapshot['discoveryRadius'],
       userId: snapshot['userId'],
       userName: snapshot['userName'],
-      createdAt: (snapshot['postDate'] as Timestamp).toDate(),
+      phoneNumber: snapshot['phoneNumber'],
+      createdAt: (snapshot['createdAt'] as Timestamp).toDate(),
     );
   }
 
   // get a list of Ad objects from a QuerySnapshot
   static List<Ad> fromQuerySnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) => Ad.fromDocument(doc)).toList();
+  }
+
+  // override compare to use ad id
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Ad && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode;
   }
 }

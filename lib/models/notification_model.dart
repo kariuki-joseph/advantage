@@ -1,8 +1,8 @@
 // Create a notification model that stores notifications about the user's search results have been found
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AdNotification {
-  final String adId;
+class NotificationModel {
+  final String id;
   final String senderId;
   final String senderName;
   final String receiverId;
@@ -11,8 +11,8 @@ class AdNotification {
   final String description;
   bool isRead;
 
-  AdNotification({
-    required this.adId,
+  NotificationModel({
+    required this.id,
     required this.senderId,
     required this.senderName,
     required this.receiverId,
@@ -23,29 +23,29 @@ class AdNotification {
   });
 
   // method to convert from Firebase DocumentSnapshot to Notification
-  factory AdNotification.fromDocumentSnapshot(DocumentSnapshot data) {
-    return AdNotification(
-      adId: data['adId'],
+  factory NotificationModel.fromDocumentSnapshot(DocumentSnapshot data) {
+    return NotificationModel(
+      id: data['id'],
       senderId: data['senderId'],
       senderName: data['senderName'],
       receiverId: data['receiverId'],
-      createdAt: data['createdAt'],
+      createdAt: (data['createdAt'] as Timestamp).toDate(),
       title: data['title'],
       description: data['description'],
       isRead: data['isRead'],
     );
   }
   // convert a list of QueryDocumentSnapshot
-  static List<AdNotification> fromQuerySnapshot(QuerySnapshot data) {
+  static List<NotificationModel> fromQuerySnapshot(QuerySnapshot data) {
     return data.docs
-        .map((doc) => AdNotification.fromDocumentSnapshot(doc))
+        .map((doc) => NotificationModel.fromDocumentSnapshot(doc))
         .toList();
   }
 
   // toMap()
   Map<String, dynamic> toMap() {
     return {
-      'adId': adId,
+      'id': id,
       'senderId': senderId,
       'senderName': senderName,
       'receiverId': receiverId,

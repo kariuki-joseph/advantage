@@ -15,7 +15,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   final List<String> _countryCodes = ["+254", "+1", "+44", "+91"];
-  final AuthController authController = Get.put(AuthController());
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
