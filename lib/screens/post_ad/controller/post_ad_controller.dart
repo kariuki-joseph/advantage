@@ -103,17 +103,17 @@ class PostAdController extends GetxController {
 
       await _firestore.collection("ads").doc(adId).set(ad.toMap());
       isLoading.value = false;
-      showSuccessToast("Ad posted successfully");
       _resetForm();
 
       // refresh the ads in home page
-      homeTabController.fetchAds();
+      homeTabController.getAdsWithRadius(false);
       myAdsController.fetchMyAds();
+
+      showSuccessToast("Ad posted successfully");
     } catch (e) {
       showErrorToast(e.toString());
     } finally {
       isLoading.value = false;
-      Get.back();
     }
   }
 

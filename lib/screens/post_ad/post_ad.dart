@@ -1,5 +1,6 @@
 import 'package:advantage/components/primary_button.dart';
 import 'package:advantage/screens/post_ad/controller/post_ad_controller.dart';
+import 'package:advantage/utils/toast_utils.dart';
 import 'package:advantage/widgets/my_btn_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -184,8 +185,9 @@ class PostAd extends StatelessWidget {
                   const SizedBox(height: 16),
                   Obx(
                     () => PrimaryButton(
-                      onPressed: () {
-                        controller.postAd();
+                      onPressed: () async {
+                        await controller.postAd();
+                        Get.back();
                       },
                       child: controller.isLoading.value
                           ? const MyBtnLoader(large: true)

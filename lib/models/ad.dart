@@ -60,7 +60,7 @@ class Ad {
       tags: List<String>.from(snapshot['tags']),
       lat: snapshot['lat'],
       lng: snapshot['lng'],
-      discoveryRadius: snapshot['discoveryRadius'],
+      discoveryRadius: (snapshot['discoveryRadius'] as num).toDouble(),
       userId: snapshot['userId'],
       userName: snapshot['userName'],
       phoneNumber: snapshot['phoneNumber'],
